@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Физика | 11 Күндік Дайындық</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0f1528;
+    --bg3: #151c34;
+    --bg4: #1c2440;
+    --card: #111827;
+    --card2: #1a2340;
+    --border: #1e2d50;
+    --border2: #2a3d6a;
+    --accent: #3b82f6;
+    --accent2: #60a5fa;
+    --accent3: #93c5fd;
+    --green: #10b981;
+    --green2: #34d399;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --purple: #8b5cf6;
+    --cyan: #06b6d4;
+    --text: #f1f5f9;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --glow: 0 0 20px rgba(59,130,246,0.15);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --nav-h: 64px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    background:var(--bg);color:var(--text);
+    min-height:100vh;padding-bottom:var(--nav-h);
+    overflow-x:hidden;
+  }
+  /* ─── TYPOGRAPHY ─── */
+  h1{font-size:clamp(1.4rem,4vw,2rem);font-weight:800;letter-spacing:-0.03em;}
+  h2{font-size:clamp(1.1rem,3vw,1.5rem);font-weight:700;}
+  h3{font-size:1rem;font-weight:600;}
+  p,li{line-height:1.7;color:var(--text2);}
+  .mono{font-family:'JetBrains Mono',monospace;font-size:.85em;}
+
+  /* ─── SCREEN MANAGER ─── */
+  .screen{display:none;min-height:calc(100vh - var(--nav-h));}
+  .screen.active{display:block;}
+
+  /* ─── BOTTOM NAV ─── */
+  #bottom-nav{
+    position:fixed;bottom:0;left:0;right:0;height:var(--nav-h);
+    background:rgba(10,14,26,0.95);backdrop-filter:blur(20px);
+    border-top:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-around;
+    z-index:100;
+  }
+  .nav-btn{
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:8px 12px;min-width:44px;min-height:44px;border:none;
+    background:none;color:var(--text3);cursor:pointer;
+    transition:color .2s,transform .1s;border-radius:var(--radius-sm);
+    font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;
+  }
+  .nav-btn svg{width:22px;height:22px;stroke-width:1.8;}
+  .nav-btn.active{color:var(--accent2);}
+  .nav-btn:active{transform:scale(.92);}
+
+  /* ─── HEADER ─── */
+  .page-header{
+    padding:20px 16px 12px;
+    background:linear-gradient(180deg,var(--bg2) 0%,transparent 100%);
+    position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);
+  }
+  .lang-toggle{
+    display:flex;gap:6px;padding:4px;background:var(--bg3);
+    border-radius:50px;border:1px solid var(--border);
+  }
+  .lang-btn{
+    padding:5px 14px;border-radius:50px;border:none;background:none;
+    color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;
+    transition:all .2s;min-height:32px;
+  }
+  .lang-btn.active{background:var(--accent);color:#fff;}
+  .header-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-bar{height:4px;background:var(--bg3);border-radius:4px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:4px;transition:width .4s;}
+
+  /* ─── DASHBOARD ─── */
+  #screen-home{padding:0 16px 20px;}
+  .hero{
+    margin:16px 0;padding:24px;
+    background:linear-gradient(135deg,var(--bg3) 0%,var(--card2) 100%);
+    border:1px solid var(--border2);border-radius:var(--radius);
+    position:relative;overflow:hidden;
+  }
+  .hero::before{
+    content:'';position:absolute;top:-50%;right:-20%;
+    width:200px;height:200px;border-radius:50%;
+    background:radial-gradient(circle,rgba(59,130,246,.12) 0%,transparent 70%);
+    pointer-events:none;
+  }
+  .hero-sub{color:var(--text2);font-size:.85rem;margin-top:6px;}
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;}
+  .stat-card{
+    padding:12px 8px;background:var(--bg4);border-radius:var(--radius-sm);
+    border:1px solid var(--border);text-align:center;
+  }
+  .stat-num{font-size:1.4rem;font-weight:800;color:var(--accent2);}
+  .stat-lbl{font-size:10px;color:var(--text3);margin-top:2px;text-transform:uppercase;letter-spacing:.05em;}
+
+  .section-title{
+    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--text3);margin:20px 0 10px;
+  }
+
+  /* ─── DAY CARDS ─── */
+  .day-grid{display:flex;flex-direction:column;gap:8px;}
+  .day-card{
+    padding:16px;background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);cursor:pointer;
+    transition:border-color .2s,transform .1s,box-shadow .2s;
+    position:relative;overflow:hidden;
+  }
+  .day-card:active{transform:scale(.98);}
+  .day-card.completed{border-color:var(--green);}
+  .day-card.active-day{border-color:var(--accent);box-shadow:var(--glow);}
+  .day-card::before{
+    content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--border2);border-radius:3px 0 0 3px;
+  }
+  .day-card.completed::before{background:var(--green);}
+  .day-card.active-day::before{background:var(--accent);}
+  .day-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .day-num{
+    font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--text3);
+  }
+  .day-badge{
+    font-size:10px;padding:2px 8px;border-radius:50px;font-weight:600;
+  }
+  .badge-todo{background:rgba(100,116,139,.15);color:var(--text3);}
+  .badge-active{background:rgba(59,130,246,.15);color:var(--accent2);}
+  .badge-done{background:rgba(16,185,129,.15);color:var(--green2);}
+  .day-title{font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:4px;}
+  .day-topics{font-size:.8rem;color:var(--text2);line-height:1.5;}
+  .day-progress{display:flex;align-items:center;gap:8px;margin-top:10px;}
+  .check-btn{
+    width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);
+    background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:all .2s;flex-shrink:0;
+  }
+  .check-btn.checked{background:var(--green);border-color:var(--green);}
+  .check-btn svg{width:14px;height:14px;stroke:white;display:none;}
+  .check-btn.checked svg{display:block;}
+  .mini-prog{flex:1;height:3px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+  .mini-prog-fill{height:100%;background:var(--green2);border-radius:3px;transition:width .4s;}
+
+  /* ─── TOPIC DETAIL ─── */
+  #screen-topic{padding:0;}
+  .topic-header{
+    padding:16px 16px 0;
+    background:linear-gradient(180deg,var(--bg2) 0%,transparent 100%);
+    position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);
+  }
+  .back-btn{
+    display:flex;align-items:center;gap:6px;padding:8px 0;
+    background:none;border:none;color:var(--text2);cursor:pointer;
+    font-size:.85rem;font-weight:600;min-height:44px;
+  }
+  .back-btn svg{width:20px;height:20px;}
+  .topic-body{padding:16px;}
+  .topic-tag{
+    display:inline-block;padding:4px 12px;border-radius:50px;
+    background:rgba(59,130,246,.15);color:var(--accent2);
+    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    margin-bottom:12px;
+  }
+  .topic-summary{
+    padding:16px;background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);margin-bottom:16px;
+    border-left:3px solid var(--accent);
+  }
+  .topic-summary p{color:var(--text2);font-size:.9rem;}
+
+  /* ─── SECTION CARDS ─── */
+  .section-card{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);margin-bottom:16px;overflow:hidden;
+  }
+  .section-head{
+    padding:14px 16px;display:flex;align-items:center;gap:10px;
+    border-bottom:1px solid var(--border);
+  }
+  .section-icon{
+    width:32px;height:32px;border-radius:8px;display:flex;align-items:center;
+    justify-content:center;flex-shrink:0;font-size:15px;
+  }
+  .section-body{padding:16px;}
+
+  /* ─── FORMULA TABLE ─── */
+  .formula-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -16px;padding:0 16px;}
+  .formula-table{width:100%;border-collapse:collapse;min-width:400px;}
+  .formula-table th{
+    padding:10px 12px;text-align:left;font-size:10px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.08em;color:var(--text3);
+    background:var(--bg3);border-bottom:1px solid var(--border);
+  }
+  .formula-table td{padding:12px;border-bottom:1px solid var(--border);font-size:.85rem;vertical-align:top;}
+  .formula-table tr:last-child td{border-bottom:none;}
+  .formula-cell{
+    font-family:'JetBrains Mono',monospace;font-size:.95rem;
+    color:var(--cyan);background:rgba(6,182,212,.08);
+    padding:6px 10px;border-radius:6px;display:inline-block;
+  }
+  .unit-cell{color:var(--yellow);}
+  .var-cell{color:var(--text2);}
+
+  /* ─── BULLET THEORY ─── */
+  .theory-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+  .theory-list li{
+    display:flex;gap:10px;align-items:flex-start;
+    padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);
+    font-size:.87rem;
+  }
+  .theory-dot{
+    width:6px;height:6px;border-radius:50%;background:var(--accent);
+    flex-shrink:0;margin-top:6px;
+  }
+
+  /* ─── FORMULA CARDS ─── */
+  .formula-cards{display:flex;flex-direction:column;gap:12px;}
+  .formula-card{
+    background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);
+    padding:14px;
+  }
+  .formula-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .formula-big{
+    font-family:'JetBrains Mono',monospace;font-size:1.02rem;font-weight:600;
+    color:var(--cyan);background:rgba(6,182,212,.1);
+    padding:8px 12px;border-radius:8px;display:inline-block;
+  }
+  .formula-unit-tag{
+    font-size:.72rem;font-weight:700;color:var(--yellow);
+    background:rgba(245,158,11,.12);padding:4px 10px;border-radius:50px;white-space:nowrap;
+  }
+  .formula-meaning{font-size:.85rem;color:var(--text);font-weight:600;margin:9px 0 11px;}
+  .var-label{
+    font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    color:var(--text3);margin-bottom:9px;
+  }
+  .var-grid{display:flex;flex-direction:column;gap:8px;}
+  .var-row{
+    display:flex;align-items:baseline;gap:10px;font-size:.82rem;
+    padding-bottom:8px;border-bottom:1px dashed var(--border);
+  }
+  .var-row:last-child{border-bottom:none;padding-bottom:0;}
+  .var-sym{
+    font-family:'JetBrains Mono',monospace;color:var(--accent2);font-weight:700;
+    min-width:46px;flex-shrink:0;
+  }
+  .var-name{flex:1;color:var(--text2);line-height:1.5;}
+  .var-unit{
+    color:var(--yellow);font-size:.76rem;white-space:nowrap;
+    font-family:'JetBrains Mono',monospace;flex-shrink:0;
+  }
+  .var-unit.dimensionless{color:var(--text3);}
+
+  /* ─── DEEP THEORY ─── */
+  .deep-theory{display:flex;flex-direction:column;gap:12px;margin-bottom:16px;}
+  .dt-block{
+    background:var(--bg3);border-left:3px solid var(--purple);
+    border-radius:var(--radius-sm);padding:13px 15px;
+  }
+  .dt-title{
+    font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:6px;
+    display:flex;align-items:center;gap:7px;
+  }
+  .dt-text{font-size:.86rem;color:var(--text2);line-height:1.75;}
+  .dt-text b{color:var(--accent3);font-weight:600;}
+  .dt-text .hl{color:var(--green2);font-weight:600;}
+  .theory-subhead{
+    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    color:var(--text3);margin:4px 0 10px;
+  }
+
+  /* ─── QUIZ ─── */
+  .quiz-q{margin-bottom:20px;}
+  .quiz-q-text{font-size:.9rem;font-weight:600;color:var(--text);margin-bottom:10px;line-height:1.5;}
+  .quiz-options{display:flex;flex-direction:column;gap:8px;}
+  .quiz-opt{
+    padding:12px 14px;background:var(--bg3);border:1.5px solid var(--border);
+    border-radius:var(--radius-sm);cursor:pointer;font-size:.85rem;color:var(--text2);
+    transition:all .2s;min-height:44px;text-align:left;display:flex;align-items:center;gap:10px;
+  }
+  .quiz-opt:active{transform:scale(.98);}
+  .quiz-opt.correct{background:rgba(16,185,129,.12);border-color:var(--green);color:var(--green2);}
+  .quiz-opt.wrong{background:rgba(239,68,68,.12);border-color:var(--red);color:#fca5a5;}
+  .quiz-opt.disabled{pointer-events:none;}
+  .opt-letter{
+    width:24px;height:24px;border-radius:50%;background:var(--bg4);
+    border:1px solid var(--border2);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;
+  }
+  .quiz-explanation{
+    margin-top:8px;padding:10px 12px;background:rgba(59,130,246,.08);
+    border-radius:var(--radius-sm);border-left:3px solid var(--accent);
+    font-size:.82rem;color:var(--text2);display:none;
+  }
+  .quiz-explanation.show{display:block;}
+  .quiz-score{
+    padding:16px;background:var(--bg3);border-radius:var(--radius);
+    text-align:center;margin-top:8px;
+  }
+  .quiz-reset{
+    margin-top:12px;padding:10px 24px;background:var(--accent);
+    border:none;border-radius:50px;color:#fff;font-weight:700;
+    cursor:pointer;font-size:.85rem;min-height:44px;
+  }
+  .quiz-reset:active{transform:scale(.96);}
+
+  /* ─── PRACTICE ─── */
+  .practice-item{
+    margin-bottom:12px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;
+  }
+  .practice-q{
+    padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;
+    transition:background .2s;min-height:44px;
+  }
+  .practice-q:active{background:var(--bg3);}
+  .practice-q-text{flex:1;font-size:.87rem;color:var(--text);line-height:1.5;}
+  .chevron{transition:transform .25s;width:18px;height:18px;stroke:var(--text3);}
+  .practice-sol{
+    padding:0 16px;max-height:0;overflow:hidden;transition:max-height .35s,padding .35s;
+    background:var(--bg3);
+  }
+  .practice-sol.open{max-height:600px;padding:14px 16px;}
+  .step{display:flex;gap:10px;margin-bottom:10px;}
+  .step-num{
+    width:22px;height:22px;border-radius:50%;background:var(--accent);
+    color:#fff;font-size:11px;font-weight:700;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .step-text{font-size:.83rem;color:var(--text2);line-height:1.6;}
+  .step-formula{
+    display:block;margin:6px 0;font-family:'JetBrains Mono',monospace;
+    color:var(--cyan);background:rgba(6,182,212,.08);
+    padding:6px 10px;border-radius:6px;font-size:.88rem;
+  }
+  .answer-box{
+    margin-top:8px;padding:10px 14px;background:rgba(16,185,129,.1);
+    border-radius:var(--radius-sm);border:1px solid rgba(16,185,129,.3);
+    font-weight:700;color:var(--green2);font-size:.88rem;
+  }
+
+  /* ─── VIDEO SECTION ─── */
+  .video-card{
+    border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;
+    margin-bottom:12px;cursor:pointer;transition:border-color .2s;
+  }
+  .video-card:active{border-color:var(--accent);}
+  .video-thumb{
+    aspect-ratio:16/9;background:var(--bg3);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;
+  }
+  .video-thumb-bg{
+    position:absolute;inset:0;
+    background:linear-gradient(135deg,var(--bg3),var(--bg4));
+  }
+  .play-icon{
+    width:56px;height:56px;border-radius:50%;
+    background:rgba(59,130,246,.9);backdrop-filter:blur(4px);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;z-index:1;box-shadow:0 0 30px rgba(59,130,246,.4);
+  }
+  .play-icon svg{width:24px;height:24px;fill:white;margin-left:3px;}
+  .video-info{padding:12px 14px;}
+  .video-title{font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:3px;}
+  .video-meta{font-size:.78rem;color:var(--text3);}
+  .video-iframe-wrap{
+    aspect-ratio:16/9;background:#000;
+  }
+  .video-iframe-wrap iframe{width:100%;height:100%;border:none;}
+
+  /* ─── PROGRESS SCREEN ─── */
+  #screen-progress{padding:0 16px 20px;}
+  .progress-ring-wrap{display:flex;justify-content:center;padding:24px 0;}
+  .ring-svg{transform:rotate(-90deg);}
+  .ring-bg{fill:none;stroke:var(--bg3);stroke-width:8;}
+  .ring-fill{fill:none;stroke:var(--accent);stroke-width:8;stroke-linecap:round;
+    stroke-dasharray:283;stroke-dashoffset:283;transition:stroke-dashoffset 1s;}
+  .ring-text{transform:rotate(90deg);transform-origin:center;}
+  .ring-center{display:flex;flex-direction:column;align-items:center;margin-top:-10px;}
+  .ring-pct{font-size:2rem;font-weight:800;color:var(--text);}
+  .ring-lbl{font-size:.75rem;color:var(--text3);}
+
+  .achievement-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .achievement{
+    padding:14px;background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);text-align:center;
+  }
+  .ach-icon{font-size:1.8rem;margin-bottom:6px;}
+  .ach-name{font-size:.75rem;font-weight:600;color:var(--text2);}
+  .ach-locked{opacity:.35;}
+
+  /* ─── SETTINGS ─── */
+  #screen-settings{padding:0 16px 20px;}
+  .settings-section{margin-bottom:20px;}
+  .settings-item{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 16px;background:var(--card);border-radius:var(--radius-sm);
+    margin-bottom:6px;border:1px solid var(--border);min-height:56px;
+  }
+  .settings-label{font-size:.9rem;font-weight:500;}
+  .settings-sub{font-size:.77rem;color:var(--text3);margin-top:2px;}
+  .toggle{
+    width:48px;height:26px;border-radius:50px;background:var(--bg3);
+    border:1px solid var(--border2);cursor:pointer;position:relative;
+    transition:background .2s;min-width:48px;
+  }
+  .toggle.on{background:var(--accent);}
+  .toggle-knob{
+    position:absolute;top:3px;left:3px;width:18px;height:18px;
+    border-radius:50%;background:#fff;transition:left .2s;
+  }
+  .toggle.on .toggle-knob{left:25px;}
+
+  /* ─── SCROLL ─── */
+  ::-webkit-scrollbar{width:3px;height:3px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+  /* ─── TOAST ─── */
+  .toast{
+    position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-80px);
+    background:var(--card2);border:1px solid var(--border2);border-radius:50px;
+    padding:10px 20px;font-size:.85rem;font-weight:600;z-index:999;
+    transition:transform .3s;white-space:nowrap;
+    box-shadow:0 8px 30px rgba(0,0,0,.4);
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);}
+
+  /* ─── PULSE ─── */
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  .pulse{animation:pulse 2s infinite;}
+
+  @media(min-width:640px){
+    .day-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .stats-row{grid-template-columns:repeat(3,1fr);}
+  }
+  @media(min-width:900px){
+    body{padding-bottom:0;}
+    #bottom-nav{display:none;}
+    .top-nav{display:flex!important;}
+    #screen-home,#screen-progress,#screen-settings{max-width:800px;margin:0 auto;}
+    .day-grid{grid-template-columns:1fr 1fr 1fr;}
+    #screen-topic .topic-body{max-width:800px;margin:0 auto;}
+  }
+  .top-nav{
+    display:none;position:sticky;top:0;z-index:100;
+    background:rgba(10,14,26,.95);backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);
+    padding:0 24px;height:60px;align-items:center;gap:4px;
+  }
+  .top-nav-btn{
+    padding:8px 16px;border:none;background:none;color:var(--text3);
+    cursor:pointer;border-radius:var(--radius-sm);font-size:.85rem;font-weight:600;
+    transition:all .2s;min-height:44px;display:flex;align-items:center;gap:6px;
+  }
+  .top-nav-btn.active{color:var(--accent2);background:rgba(59,130,246,.1);}
+  .top-nav-logo{font-weight:800;color:var(--text);margin-right:auto;font-size:1rem;}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV (desktop) -->
+<nav class="top-nav" id="top-nav">
+  <span class="top-nav-logo">⚛ Физика</span>
+  <button class="top-nav-btn active" onclick="showScreen('home')" id="tnav-home">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    <span id="tnav-home-lbl">Басты бет</span>
+  </button>
+  <button class="top-nav-btn" onclick="showScreen('progress')" id="tnav-progress">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span id="tnav-progress-lbl">Прогресс</span>
+  </button>
+  <button class="top-nav-btn" onclick="showScreen('settings')" id="tnav-settings">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 0 1 21.42 8.79l-2 1.15a7 7 0 0 0 0 4.12l2 1.15a10 10 0 0 1-2.35 3.86l-2-1.15a7 7 0 0 1-3.57 2.06v2.3a10 10 0 0 1-4.48 0v-2.3A7 7 0 0 1 5.44 18l-2 1.15a10 10 0 0 1-2.35-3.86l2-1.15a7 7 0 0 0 0-4.12L1.09 8.79a10 10 0 0 1 2.35-3.86L5.44 6.08A7 7 0 0 1 9 4.02V1.72a10 10 0 0 1 4.48 0v2.3a7 7 0 0 1 3.57 2.06l2-1.15Z"/></svg>
+    <span id="tnav-settings-lbl">Параметрлер</span>
+  </button>
+  <div style="display:flex;gap:6px;padding:4px;background:var(--bg3);border-radius:50px;border:1px solid var(--border);margin-left:12px;">
+    <button class="lang-btn active" id="tlang-kk" onclick="setLang('kk')">ҚАЗ</button>
+    <button class="lang-btn" id="tlang-ru" onclick="setLang('ru')">РУС</button>
+  </div>
+</nav>
+
+<!-- SCREENS -->
+
+<!-- HOME / DASHBOARD -->
+<div id="screen-home" class="screen active">
+  <div class="page-header">
+    <div class="header-row">
+      <div>
+        <div class="section-title" style="margin:0 0 2px;" id="lbl-grade">10-11 СЫНЫП • ЕМН</div>
+        <h1 id="lbl-app-title">Физика Дайындық</h1>
+      </div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="lang-kk" onclick="setLang('kk')">ҚАЗ</button>
+        <button class="lang-btn" id="lang-ru" onclick="setLang('ru')">РУС</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-home-body" style="padding:0 16px 20px;">
+    <div class="hero">
+      <div class="hero::before"></div>
+      <h2 id="hero-title">11 Күндік Интенсив</h2>
+      <p class="hero-sub" id="hero-sub">Механикадан кванттық физикаға дейін — жүйелі дайындық</p>
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card"><div class="stat-num" id="stat-done">0</div><div class="stat-lbl" id="stat-done-lbl">Аяқталды</div></div>
+        <div class="stat-card"><div class="stat-num">11</div><div class="stat-lbl" id="stat-total-lbl">Барлығы</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-pct">0%</div><div class="stat-lbl" id="stat-pct-lbl">Прогресс</div></div>
+      </div>
+      <div class="progress-bar" style="margin-top:12px;">
+        <div class="progress-fill" id="hero-prog" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="section-title" id="lbl-plan">11 КҮНДІК ЖОСПАР</div>
+    <div class="day-grid" id="day-grid"></div>
+  </div>
+</div>
+
+<!-- TOPIC DETAIL -->
+<div id="screen-topic" class="screen"></div>
+
+<!-- PROGRESS -->
+<div id="screen-progress" class="screen">
+  <div class="page-header">
+    <h2 id="lbl-progress-title">Прогресс</h2>
+  </div>
+  <div style="padding:0 16px 20px;">
+    <div class="progress-ring-wrap">
+      <div style="position:relative;display:inline-block;">
+        <svg class="ring-svg" width="120" height="120">
+          <circle class="ring-bg" cx="60" cy="60" r="45"/>
+          <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="45"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+          <span class="ring-pct" id="ring-pct">0%</span>
+          <span class="ring-lbl" id="ring-lbl">Аяқталды</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title" id="lbl-days-progress">КҮНДЕР БОЙЫНША</div>
+    <div id="progress-day-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+
+    <div class="section-title" style="margin-top:20px;" id="lbl-achievements">ЖЕТІСТІКТЕР</div>
+    <div class="achievement-grid" id="achievement-grid"></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div id="screen-settings" class="screen">
+  <div class="page-header"><h2 id="lbl-settings-title">Параметрлер</h2></div>
+  <div style="padding:0 16px 20px;">
+    <div class="section-title" id="lbl-pref">БАПТАУЛАР</div>
+    <div class="settings-item">
+      <div><div class="settings-label" id="set-notif">Еске салу</div><div class="settings-sub" id="set-notif-sub">Күнделікті оқу хабарламалары</div></div>
+      <div class="toggle" id="toggle-notif" onclick="toggleSetting('notif')"><div class="toggle-knob"></div></div>
+    </div>
+    <div class="settings-item">
+      <div><div class="settings-label" id="set-sound">Дыбыс эффекттері</div><div class="settings-sub" id="set-sound-sub">Тест беруде дыбыс</div></div>
+      <div class="toggle on" id="toggle-sound" onclick="toggleSetting('sound')"><div class="toggle-knob"></div></div>
+    </div>
+    <div class="section-title" style="margin-top:20px;" id="lbl-about">ҚОСЫМША ТУРАЛЫ</div>
+    <div class="settings-item"><div><div class="settings-label" id="set-ver">Нұсқа</div><div class="settings-sub">1.0.0 • 2025</div></div></div>
+    <div class="settings-item" style="cursor:pointer;" onclick="resetProgress()">
+      <div><div class="settings-label" style="color:var(--red);" id="set-reset">Прогресті тазалау</div><div class="settings-sub" id="set-reset-sub">Барлық деректерді жою</div></div>
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav id="bottom-nav">
+  <button class="nav-btn active" id="nav-home" onclick="showScreen('home')">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    <span id="nav-home-lbl">Басты</span>
+  </button>
+  <button class="nav-btn" id="nav-progress" onclick="showScreen('progress')">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span id="nav-prog-lbl">Прогресс</span>
+  </button>
+  <button class="nav-btn" id="nav-settings" onclick="showScreen('settings')">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 0 1 21.42 8.79l-2 1.15a7 7 0 0 0 0 4.12l2 1.15a10 10 0 0 1-2.35 3.86l-2-1.15a7 7 0 0 1-3.57 2.06v2.3a10 10 0 0 1-4.48 0v-2.3A7 7 0 0 1 5.44 18l-2 1.15a10 10 0 0 1-2.35-3.86l2-1.15a7 7 0 0 0 0-4.12L1.09 8.79a10 10 0 0 1 2.35-3.86L5.44 6.08A7 7 0 0 1 9 4.02V1.72a10 10 0 0 1 4.48 0v2.3a7 7 0 0 1 3.57 2.06l2-1.15Z"/></svg>
+    <span id="nav-set-lbl">Параметр</span>
+  </button>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// TRANSLATIONS
+// ═══════════════════════════════════════════════════════
+const T = {
+  kk: {
+    appTitle:'Физика Дайындық', grade:'10-11 СЫНЫП • ЕМН',
+    heroTitle:'11 Күндік Интенсив',
+    heroSub:'Механикадан кванттық физикаға дейін — жүйелі дайындық',
+    statDone:'Аяқталды', statTotal:'Барлығы', statPct:'Прогресс',
+    plan:'11 КҮНДІК ЖОСПАР',
+    progressTitle:'Прогресс', ringLbl:'Аяқталды',
+    daysProgress:'КҮНДЕР БОЙЫНША', achievements:'ЖЕТІСТІКТЕР',
+    settingsTitle:'Параметрлер', pref:'БАПТАУЛАР',
+    setNotif:'Еске салу', setNotifSub:'Күнделікті оқу хабарламалары',
+    setSound:'Дыбыс эффекттері', setSoundSub:'Тест беруде дыбыс',
+    about:'ҚОСЫМША ТУРАЛЫ', setVer:'Нұсқа',
+    setReset:'Прогресті тазалау', setResetSub:'Барлық деректерді жою',
+    navHome:'Басты', navProg:'Прогресс', navSet:'Параметр',
+    back:'Артқа', summary:'Қысқаша', formulas:'Формулалар мен бірліктер',
+    theory:'Теория', quiz:'Тест', practice:'Есептер', video:'Бейнесабақтар',
+    badgeTodo:'Жоспар', badgeActive:'Бүгін', badgeDone:'Аяқталды',
+    checkTopic:'Тақырыпты аяқта', resetQuiz:'Қайтадан шешу',
+    yourScore:'Нәтиже', watchVideo:'Бейнені ашу',
+    solution:'Шешімі', formula:'Формула', unit:'Бірлік', meaning:'Мағынасы',
+    terms:'Шамалардың мағынасы', deepTheory:'Толық теория', quickReview:'Қысқаша қайталау',
+    question:'сұрақ', correct:'дұрыс',
+    toastDone:'✓ Тақырып аяқталды!', toastReset:'Прогресс тазаланды',
+  },
+  ru: {
+    appTitle:'Подготовка по физике', grade:'10-11 КЛАСС • ЕМН',
+    heroTitle:'11-дневный интенсив',
+    heroSub:'От механики до квантовой физики — системная подготовка',
+    statDone:'Завершено', statTotal:'Всего', statPct:'Прогресс',
+    plan:'ПЛАН НА 11 ДНЕЙ',
+    progressTitle:'Прогресс', ringLbl:'Завершено',
+    daysProgress:'ПО ДНЯМ', achievements:'ДОСТИЖЕНИЯ',
+    settingsTitle:'Настройки', pref:'НАСТРОЙКИ',
+    setNotif:'Напоминания', setNotifSub:'Ежедневные уведомления об учёбе',
+    setSound:'Звуковые эффекты', setSoundSub:'Звук при тестировании',
+    about:'О ПРИЛОЖЕНИИ', setVer:'Версия',
+    setReset:'Сбросить прогресс', setResetSub:'Удалить все данные',
+    navHome:'Главная', navProg:'Прогресс', navSet:'Настройки',
+    back:'Назад', summary:'Краткое описание', formulas:'Формулы и единицы',
+    theory:'Теория', quiz:'Тест', practice:'Задачи', video:'Видеоуроки',
+    badgeTodo:'Запланировано', badgeActive:'Сегодня', badgeDone:'Завершено',
+    checkTopic:'Завершить тему', resetQuiz:'Пройти снова',
+    yourScore:'Результат', watchVideo:'Открыть видео',
+    solution:'Решение', formula:'Формула', unit:'Единица', meaning:'Значение',
+    terms:'Что означают величины', deepTheory:'Подробная теория', quickReview:'Краткое повторение',
+    question:'вопрос', correct:'правильно',
+    toastDone:'✓ Тема завершена!', toastReset:'Прогресс сброшен',
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+// CURRICULUM DATA (10th + 11th grade Kazakhstan EMN)
+// ═══════════════════════════════════════════════════════
+const DAYS = [
+  {
+    id:1, day:'1', icon:'🏃',
+    kk:{ title:'Кинематика', topics:'Бірқалыпты/үдемелі қозғалыс. Вектор шамалары. Жылдамдық, үдеу, орын ауыстыру.',
+      tag:'Механика — 10 сынып' },
+    ru:{ title:'Кинематика', topics:'Равномерное/ускоренное движение. Векторные величины. Скорость, ускорение, перемещение.',
+      tag:'Механика — 10 класс' },
+    formulas:[
+      {f:'v = v₀ + at', unit:'м/с', meaning_kk:'Жылдамдық (бірқалыпты үдемелі қозғалыс)', meaning_ru:'Скорость (равноускоренное движение)',
+        vars:[
+          {s:'v', kk:'осы кездегі (соңғы) жылдамдық', ru:'мгновенная (конечная) скорость', u:'м/с'},
+          {s:'v₀', kk:'бастапқы жылдамдық', ru:'начальная скорость', u:'м/с'},
+          {s:'a', kk:'үдеу', ru:'ускорение', u:'м/с²'},
+          {s:'t', kk:'қозғалыс уақыты', ru:'время движения', u:'с'},
+        ]},
+      {f:'x = x₀ + v₀t + at²/2', unit:'м', meaning_kk:'Координата (орын ауыстыру теңдеуі)', meaning_ru:'Координата (уравнение перемещения)',
+        vars:[
+          {s:'x', kk:'t уақыттағы координата', ru:'координата в момент t', u:'м'},
+          {s:'x₀', kk:'бастапқы координата', ru:'начальная координата', u:'м'},
+          {s:'v₀', kk:'бастапқы жылдамдық', ru:'начальная скорость', u:'м/с'},
+          {s:'a', kk:'үдеу', ru:'ускорение', u:'м/с²'},
+          {s:'t', kk:'уақыт', ru:'время', u:'с'},
+        ]},
+      {f:'v² = v₀² + 2aΔx', unit:'м²/с²', meaning_kk:'Уақытсыз жылдамдық формуласы', meaning_ru:'Скорость без времени',
+        vars:[
+          {s:'v', kk:'соңғы жылдамдық', ru:'конечная скорость', u:'м/с'},
+          {s:'v₀', kk:'бастапқы жылдамдық', ru:'начальная скорость', u:'м/с'},
+          {s:'a', kk:'үдеу', ru:'ускорение', u:'м/с²'},
+          {s:'Δx', kk:'орын ауыстыру (жүрілген жол)', ru:'перемещение (пройденный путь)', u:'м'},
+        ]},
+      {f:'a = Δv/Δt', unit:'м/с²', meaning_kk:'Үдеудің анықтамасы', meaning_ru:'Определение ускорения',
+        vars:[
+          {s:'a', kk:'үдеу', ru:'ускорение', u:'м/с²'},
+          {s:'Δv', kk:'жылдамдықтың өзгерісі (v − v₀)', ru:'изменение скорости (v − v₀)', u:'м/с'},
+          {s:'Δt', kk:'уақыт аралығы', ru:'промежуток времени', u:'с'},
+        ]},
+    ],
+    deep_kk:[
+      {h:'📍 Кинематика дегеніміз не', t:'Кинематика — қозғалыстың <b>себептерін (күштерді) қарастырмай</b>, тек оның <b>сипаттамаларын</b>: координата, орын ауыстыру, жол, жылдамдық және үдеуді зерттейтін механика бөлімі. Барлық шамалар <b>санақ жүйесіне</b> (дене + координата осі + сағат) қатысты анықталады.'},
+      {h:'🧭 Жол мен орын ауыстыру', t:'<b>Жол (s)</b> — дене жүрген траекторияның толық ұзындығы, әрқашан оң скаляр. <b>Орын ауыстыру (Δx)</b> — бастапқы нүктеден соңғы нүктеге бағытталған вектор. Түзу сызықты бір бағыттағы қозғалыста олар тең, ал қозғалыс бағыты өзгерсе — әртүрлі болады.'},
+      {h:'⚡ Жылдамдық пен үдеу', t:'<b>Жылдамдық</b> — орын ауыстырудың уақытқа қатынасы, дене қаншалықты тез орын ауыстыратынын көрсетеді. <b>Үдеу</b> — жылдамдықтың уақыт бойынша өзгеру жылдамдығы. Егер <span class="hl">a > 0 (v-мен бағыттас)</span> — дене үдейді, ал <span class="hl">a < 0 (v-ге қарсы)</span> — баяулайды (тежеледі).'},
+      {h:'📊 Графиктерді оқу', t:'<b>v–t графигі:</b> түзудің еңкейуі — үдеу (a), ал график астындағы аудан — жүрілген жол (s). <b>Бірқалыпты</b> қозғалыста v–t сызығы горизонталь, ал <b>үдемелі</b> қозғалыста — еңкейген түзу. x–t графигінде сызықтың еңкейуі жылдамдықты береді.'},
+    ],
+    deep_ru:[
+      {h:'📍 Что такое кинематика', t:'Кинематика — раздел механики, который изучает <b>как движется тело</b> (координата, перемещение, путь, скорость, ускорение), <b>не рассматривая причин</b> движения (силы). Все величины определяются относительно <b>системы отсчёта</b> (тело отсчёта + ось координат + часы).'},
+      {h:'🧭 Путь и перемещение', t:'<b>Путь (s)</b> — полная длина траектории, всегда положительный скаляр. <b>Перемещение (Δx)</b> — вектор, направленный из начальной точки в конечную. При прямолинейном движении в одну сторону они равны; если направление меняется — различаются.'},
+      {h:'⚡ Скорость и ускорение', t:'<b>Скорость</b> — отношение перемещения ко времени, показывает, как быстро тело меняет положение. <b>Ускорение</b> — быстрота изменения скорости. Если <span class="hl">a > 0 (сонаправлено с v)</span> — тело разгоняется, если <span class="hl">a < 0 (против v)</span> — тормозит.'},
+      {h:'📊 Чтение графиков', t:'<b>График v–t:</b> наклон прямой — это ускорение (a), а площадь под графиком — пройденный путь (s). При <b>равномерном</b> движении линия v–t горизонтальна, при <b>равноускоренном</b> — наклонная прямая. На графике x–t наклон линии даёт скорость.'},
+    ],
+    quiz:[
+      { q_kk:'Денеге v₀ = 10 м/с, a = 2 м/с². 5 с кейін жылдамдығы?', q_ru:'Тело с v₀ = 10 м/с, a = 2 м/с². Скорость через 5 с?',
+        opts:['10 м/с','15 м/с','20 м/с','25 м/с'], ans:2,
+        exp_kk:'v = 10 + 2×5 = 20 м/с', exp_ru:'v = 10 + 2×5 = 20 м/с' },
+      { q_kk:'Бірқалыпты қозғалыстың графигі (v-t) қандай?', q_ru:'Как выглядит график v-t при равномерном движении?',
+        opts_kk:['Еңкейген түзу','Горизонталь түзу','Парабола','Гипербола'],
+        opts_ru:['Наклонная прямая','Горизонтальная прямая','Парабола','Гипербола'],
+        ans:1, exp_kk:'v = const, сондықтан горизонталь түзу', exp_ru:'v = const, поэтому горизонтальная прямая' },
+      { q_kk:'Дене 4 с ішінде 20 м/с-ден 0-ге дейін тежелді. Үдеуі?', q_ru:'Тело тормозило с 20 м/с до 0 за 4 с. Ускорение?',
+        opts:['-5 м/с²','-4 м/с²','-10 м/с²','5 м/с²'], ans:0,
+        exp_kk:'a = (0−20)/4 = −5 м/с²', exp_ru:'a = (0−20)/4 = −5 м/с²' },
+    ],
+    practice:[
+      { q_kk:'Велосипедші v₀=0-ден бастап a=1.5 м/с² үдеумен 8 с жүреді. Жол мен соңғы жылдамдықты табыңыз.',
+        q_ru:'Велосипедист начинает с v₀=0, ускорение a=1.5 м/с², едет 8 с. Найдите путь и конечную скорость.',
+        steps_kk:[
+          {t:'Соңғы жылдамдық', f:'v = v₀ + at = 0 + 1.5 × 8', ans:'v = 12 м/с'},
+          {t:'Жол', f:'s = v₀t + at²/2 = 0 + 1.5 × 64/2', ans:'s = 48 м'},
+        ],
+        steps_ru:[
+          {t:'Конечная скорость', f:'v = v₀ + at = 0 + 1.5 × 8', ans:'v = 12 м/с'},
+          {t:'Путь', f:'s = v₀t + at²/2 = 0 + 1.5 × 64/2', ans:'s = 48 м'},
+        ]
+      },
+      { q_kk:'Поезд v₀=72 км/сағ жылдамдықта тежеліп, 200 м жол жүріп тоқтады. Тежелу үдеуін табыңыз.',
+        q_ru:'Поезд тормозил со скорости 72 км/ч и остановился через 200 м. Найдите ускорение торможения.',
+        steps_kk:[
+          {t:'Бірліктерді түрлендіру', f:'v₀ = 72 км/сағ = 20 м/с', ans:''},
+          {t:'Формула қолдану', f:'v² = v₀² + 2aΔx → 0 = 400 + 2a·200', ans:'a = −1 м/с²'},
+        ],
+        steps_ru:[
+          {t:'Перевод единиц', f:'v₀ = 72 км/ч = 20 м/с', ans:''},
+          {t:'Применить формулу', f:'v² = v₀² + 2aΔx → 0 = 400 + 2a·200', ans:'a = −1 м/с²'},
+        ]
+      }
+    ],
+    videos:[
+      {title_kk:'Кинематика негіздері | 10-сынып', title_ru:'Основы кинематики | 10 класс', ch:'Khan Academy KZ', url:'https://www.youtube.com/results?search_query=кинематика+10+класс+казахстан'},
+      {title_kk:'Үдемелі қозғалыс есептері', title_ru:'Задачи на ускоренное движение', ch:'Физика ЕНТ', url:'https://www.youtube.com/results?search_query=ускоренное+движение+физика+10'},
+    ]
+  },
+  {
+    id:2, day:'2', icon:'⚡',
+    kk:{ title:'Динамика. Ньютон заңдары', topics:'Ньютонның I, II, III заңдары. Үйкеліс күші. Гравитация.', tag:'Механика — 10 сынып' },
+    ru:{ title:'Динамика. Законы Ньютона', topics:'Законы Ньютона I, II, III. Сила трения. Гравитация.', tag:'Механика — 10 класс' },
+    formulas:[
+      {f:'F = ma', unit:'Н', meaning_kk:'Ньютонның II заңы (негізгі)', meaning_ru:'Второй закон Ньютона (основной)',
+        vars:[
+          {s:'F', kk:'денеге әсер ететін тең әсерлі күш', ru:'равнодействующая сила на тело', u:'Н'},
+          {s:'m', kk:'дене массасы', ru:'масса тела', u:'кг'},
+          {s:'a', kk:'дене алатын үдеу', ru:'ускорение тела', u:'м/с²'},
+        ]},
+      {f:'F_үйк = μN', unit:'Н', meaning_kk:'Сырғанау үйкеліс күші', meaning_ru:'Сила трения скольжения',
+        vars:[
+          {s:'F_үйк', kk:'үйкеліс күші', ru:'сила трения', u:'Н'},
+          {s:'μ', kk:'үйкеліс коэффициенті (өлшемсіз)', ru:'коэффициент трения (безразмерный)', u:'—'},
+          {s:'N', kk:'тірек реакциясының күші', ru:'сила реакции опоры', u:'Н'},
+        ]},
+      {f:'F_г = mg', unit:'Н', meaning_kk:'Ауырлық күші', meaning_ru:'Сила тяжести',
+        vars:[
+          {s:'F_г', kk:'ауырлық күші', ru:'сила тяжести', u:'Н'},
+          {s:'m', kk:'дене массасы', ru:'масса тела', u:'кг'},
+          {s:'g', kk:'еркін түсу үдеуі (≈9,8 м/с²)', ru:'ускорение свободного падения (≈9,8 м/с²)', u:'м/с²'},
+        ]},
+      {f:'F₁ = −F₂', unit:'Н', meaning_kk:'Ньютонның III заңы', meaning_ru:'Третий закон Ньютона',
+        vars:[
+          {s:'F₁', kk:'1-ші дененің 2-шіге әсер күші', ru:'сила действия 1-го тела на 2-е', u:'Н'},
+          {s:'F₂', kk:'2-ші дененің 1-шіге кері әсер күші', ru:'сила противодействия 2-го на 1-е', u:'Н'},
+          {s:'(−)', kk:'күштер қарама-қарсы бағытталған', ru:'силы противоположно направлены', u:'—'},
+        ]},
+      {f:'p = mv', unit:'кг·м/с', meaning_kk:'Дене импульсі (қозғалыс мөлшері)', meaning_ru:'Импульс тела',
+        vars:[
+          {s:'p', kk:'импульс (вектор)', ru:'импульс (вектор)', u:'кг·м/с'},
+          {s:'m', kk:'дене массасы', ru:'масса тела', u:'кг'},
+          {s:'v', kk:'дене жылдамдығы', ru:'скорость тела', u:'м/с'},
+        ]},
+    ],
+    deep_kk:[
+      {h:'1️⃣ Ньютонның бірінші заңы (инерция)', t:'Денеге әсер ететін күштердің тең әсерлісі <b>нөлге тең болса</b>, дене <b>тыныштықта қалады немесе бірқалыпты түзу сызықты қозғалады</b>. Денелердің жылдамдығын сақтау қасиеті <b>инерция</b> деп аталады, ал оның өлшемі — масса: масса неғұрлым үлкен болса, денені қозғалтқа да, тоқтатқа да қиынырақ.'},
+      {h:'2️⃣ Екінші заң — динамиканың негізі', t:'Дененің <b>үдеуі әсер етуші күшке тура, ал массасына кері пропорционал</b>: a = F/m. Үдеу әрқашан тең әсерлі күш бағытымен бағытталады. Есеп шешу алгоритмі: (1) денеге әсер ететін барлық күштерді сал, (2) осьтерді таңда, (3) әр ось бойынша F = ma теңдеуін жаз.'},
+      {h:'3️⃣ Үшінші заң — әсер мен қарсы әсер', t:'Екі дене бір-біріне <b>модулі бойынша тең, бағыты қарама-қарсы</b> күштермен әсер етеді. Маңызды: бұл күштер <b>әртүрлі денелерге</b> түсірілгендіктен бір-бірін теңгермейді (компенсацияламайды).'},
+      {h:'🧲 Негізгі күштер', t:'<b>Ауырлық күші</b> F = mg — Жерге тартылу. <b>Тірек реакциясы N</b> — бетке перпендикуляр. <b>Үйкеліс күші</b> F = μN — қозғалысқа қарсы. <b>Серпімділік күші</b> F = kx — деформацияға қарсы (Гук заңы). Дененің <b>салмағы</b> — дененің тірекке немесе ілмекке әсер ететін күші (ауырлық күшінен ажырату керек!).'},
+    ],
+    deep_ru:[
+      {h:'1️⃣ Первый закон Ньютона (инерция)', t:'Если равнодействующая всех сил на тело <b>равна нулю</b>, тело <b>покоится или движется равномерно и прямолинейно</b>. Свойство тел сохранять скорость называется <b>инерцией</b>, а его мерой является масса: чем больше масса, тем труднее тело разогнать или остановить.'},
+      {h:'2️⃣ Второй закон — основа динамики', t:'Ускорение тела <b>прямо пропорционально силе и обратно пропорционально массе</b>: a = F/m. Ускорение всегда направлено вдоль равнодействующей силы. Алгоритм решения задач: (1) изобрази все силы на теле, (2) выбери оси, (3) запиши F = ma для каждой оси.'},
+      {h:'3️⃣ Третий закон — действие и противодействие', t:'Два тела действуют друг на друга силами, <b>равными по модулю и противоположными по направлению</b>. Важно: эти силы приложены к <b>разным телам</b>, поэтому они не уравновешивают (не компенсируют) друг друга.'},
+      {h:'🧲 Основные силы', t:'<b>Сила тяжести</b> F = mg — притяжение к Земле. <b>Реакция опоры N</b> — перпендикулярна поверхности. <b>Сила трения</b> F = μN — против движения. <b>Сила упругости</b> F = kx — против деформации (закон Гука). <b>Вес тела</b> — это сила, с которой тело давит на опору или подвес (его нужно отличать от силы тяжести!).'},
+    ],
+    quiz:[
+      { q_kk:'5 кг дене 20 Н күш әсерінен үдеуі?', q_ru:'Ускорение тела массой 5 кг под действием силы 20 Н?',
+        opts:['2 м/с²','4 м/с²','10 м/с²','100 м/с²'], ans:1,
+        exp_kk:'a = F/m = 20/5 = 4 м/с²', exp_ru:'a = F/m = 20/5 = 4 м/с²' },
+      { q_kk:'Үйкеліс коэффициенті μ=0.3, N=100 Н. Үйкеліс күші?', q_ru:'μ=0.3, N=100 Н. Сила трения?',
+        opts:['3 Н','30 Н','300 Н','0.3 Н'], ans:1,
+        exp_kk:'F = μN = 0.3 × 100 = 30 Н', exp_ru:'F = μN = 0.3 × 100 = 30 Н' },
+      { q_kk:'Ньютонның III заңы бойынша іс-қимыл күші мен кері іс-қимыл күші:',
+        q_ru:'По третьему закону Ньютона силы действия и противодействия:',
+        opts_kk:['Бір денеге қолданылады','Тең және қарама-қарсы, екі денеге','Бірдей бағытта','Тең емес'],
+        opts_ru:['Приложены к одному телу','Равны и противоположны, к двум телам','Одного направления','Не равны'],
+        ans:1, exp_kk:'Екі дене бір-біріне тең мөлшерде қарама-қарсы күш жасайды', exp_ru:'Два тела действуют друг на друга с равными и противоположными силами' },
+    ],
+    practice:[
+      { q_kk:'10 кг жәшік горизонталь беткейде тұр. μ=0.4. Жылжыту үшін қажетті минималды күш?',
+        q_ru:'Ящик 10 кг на горизонтальной поверхности. μ=0.4. Минимальная сила для сдвига?',
+        steps_kk:[
+          {t:'Қалыпты реакция', f:'N = mg = 10 × 10 = 100 Н', ans:''},
+          {t:'Максималды үйкеліс', f:'F_үйк = μN = 0.4 × 100', ans:'F_үйк = 40 Н'},
+          {t:'Жауап', f:'F_мин = F_үйк', ans:'F = 40 Н'},
+        ],
+        steps_ru:[
+          {t:'Нормальная реакция', f:'N = mg = 10 × 10 = 100 Н', ans:''},
+          {t:'Максимальное трение', f:'F_тр = μN = 0.4 × 100', ans:'F_тр = 40 Н'},
+          {t:'Ответ', f:'F_мин = F_тр', ans:'F = 40 Н'},
+        ]
+      }
+    ],
+    videos:[
+      {title_kk:'Ньютон заңдары | Динамика', title_ru:'Законы Ньютона | Динамика', ch:'Физика.kz', url:'https://www.youtube.com/results?search_query=законы+ньютона+физика+10+класс'},
+    ]
+  },
+  {
+    id:3, day:'3', icon:'🔄',
+    kk:{ title:'Сақталу заңдары. Статика', topics:'Импульс, энергия сақталу заңдары. Жұмыс, қуат. Тепе-теңдік.', tag:'Механика — 10 сынып' },
+    ru:{ title:'Законы сохранения. Статика', topics:'Законы сохранения импульса, энергии. Работа, мощность. Равновесие.', tag:'Механика — 10 класс' },
+    formulas:[
+      {f:'A = Fs·cosα', unit:'Дж', meaning_kk:'Механикалық жұмыс', meaning_ru:'Механическая работа',
+        vars:[
+          {s:'A', kk:'күштің жұмысы', ru:'работа силы', u:'Дж'},
+          {s:'F', kk:'әсер етуші күш', ru:'действующая сила', u:'Н'},
+          {s:'s', kk:'орын ауыстыру', ru:'перемещение', u:'м'},
+          {s:'α', kk:'күш пен орын ауыстыру арасындағы бұрыш', ru:'угол между силой и перемещением', u:'°'},
+        ]},
+      {f:'E_к = mv²/2', unit:'Дж', meaning_kk:'Кинетикалық энергия (қозғалыс)', meaning_ru:'Кинетическая энергия (движение)',
+        vars:[
+          {s:'E_к', kk:'кинетикалық энергия', ru:'кинетическая энергия', u:'Дж'},
+          {s:'m', kk:'дене массасы', ru:'масса тела', u:'кг'},
+          {s:'v', kk:'дене жылдамдығы', ru:'скорость тела', u:'м/с'},
+        ]},
+      {f:'E_п = mgh', unit:'Дж', meaning_kk:'Ауырлық потенциалдық энергиясы', meaning_ru:'Потенциальная энергия тяжести',
+        vars:[
+          {s:'E_п', kk:'потенциалдық энергия', ru:'потенциальная энергия', u:'Дж'},
+          {s:'m', kk:'дене массасы', ru:'масса тела', u:'кг'},
+          {s:'g', kk:'еркін түсу үдеуі', ru:'ускорение свободного падения', u:'м/с²'},
+          {s:'h', kk:'нөлдік деңгейден биіктік', ru:'высота над нулевым уровнем', u:'м'},
+        ]},
+      {f:'P = A/t = Fv', unit:'Вт', meaning_kk:'Қуат (жұмыс жылдамдығы)', meaning_ru:'Мощность (быстрота работы)',
+        vars:[
+          {s:'P', kk:'қуат', ru:'мощность', u:'Вт'},
+          {s:'A', kk:'атқарылған жұмыс', ru:'совершённая работа', u:'Дж'},
+          {s:'t', kk:'уақыт', ru:'время', u:'с'},
+          {s:'F', kk:'күш', ru:'сила', u:'Н'},
+          {s:'v', kk:'жылдамдық', ru:'скорость', u:'м/с'},
+        ]},
+      {f:'p₁ + p₂ = p₁\' + p₂\'', unit:'кг·м/с', meaning_kk:'Импульс сақталу заңы (тұйық жүйе)', meaning_ru:'Закон сохранения импульса (замкнутая система)',
+        vars:[
+          {s:'p₁,p₂', kk:'денелердің соқтығысуға дейінгі импульстері', ru:'импульсы тел до взаимодействия', u:'кг·м/с'},
+          {s:"p₁',p₂'", kk:'соқтығысудан кейінгі импульстер', ru:'импульсы после взаимодействия', u:'кг·м/с'},
+        ]},
+      {f:'η = A_пайд/A_толық·100%', unit:'%', meaning_kk:'Пайдалы әсер коэффициенті (ПӘК)', meaning_ru:'Коэффициент полезного действия (КПД)',
+        vars:[
+          {s:'η', kk:'ПӘК', ru:'КПД', u:'%'},
+          {s:'A_пайд', kk:'пайдалы жұмыс', ru:'полезная работа', u:'Дж'},
+          {s:'A_толық', kk:'жұмсалған толық жұмыс', ru:'затраченная полная работа', u:'Дж'},
+        ]},
+    ],
+    deep_kk:[
+      {h:'⚙️ Жұмыс және энергия', t:'<b>Механикалық жұмыс</b> күш денені орын ауыстырғанда ғана жасалады: A = F·s·cosα. Егер күш орын ауыстыруға <b>перпендикуляр</b> (α=90°) болса — жұмыс <b>нөлге тең</b>. <b>Энергия</b> — дененің жұмыс істеу қабілеті; жұмыс — энергияны бір түрден екіншіге айналдыру немесе бір денеден екіншіге беру өлшемі. Өлшем бірлігі ортақ: <b>джоуль (Дж)</b>.'},
+      {h:'🔋 Кинетикалық және потенциалдық энергия', t:'<b>Кинетикалық</b> энергия қозғалысқа байланысты (E = mv²/2): жылдамдық 2 есе артса — энергия 4 есе артады. <b>Потенциалдық</b> энергия дененің өзара орналасуына байланысты: ауырлық өрісінде E = mgh, ал серіппеде E = kx²/2.'},
+      {h:'🔒 Сақталу заңдары', t:'<b>Энергия сақталу заңы:</b> үйкеліс болмаса, E_к + E_п = const — энергия бір түрден екіншіге өтеді, бірақ толық мөлшері өзгермейді. <b>Импульс сақталу заңы:</b> тұйық жүйеде (сыртқы күштер жоқ) денелердің импульстерінің векторлық қосындысы тұрақты. Бұл соқтығысу мен атылу есептерінің негізі.'},
+      {h:'⚖️ Статика — тепе-теңдік шарттары', t:'Дене тепе-теңдікте болу үшін: (1) барлық күштердің тең әсерлісі нөлге тең (ΣF = 0); (2) барлық моменттердің қосындысы нөлге тең (ΣM = 0). <b>Күш моменті</b> M = F·d, мұндағы d — иық (айналу осінен күш сызығына дейінгі қашықтық). Иінтіректің тепе-теңдік ережесі: F₁d₁ = F₂d₂.'},
+    ],
+    deep_ru:[
+      {h:'⚙️ Работа и энергия', t:'<b>Механическая работа</b> совершается, только если сила перемещает тело: A = F·s·cosα. Если сила <b>перпендикулярна</b> перемещению (α=90°) — работа <b>равна нулю</b>. <b>Энергия</b> — способность тела совершать работу; работа есть мера превращения энергии из одного вида в другой или передачи от тела к телу. Общая единица — <b>джоуль (Дж)</b>.'},
+      {h:'🔋 Кинетическая и потенциальная энергия', t:'<b>Кинетическая</b> энергия связана с движением (E = mv²/2): при увеличении скорости в 2 раза энергия растёт в 4 раза. <b>Потенциальная</b> энергия связана со взаимным расположением тел: в поле тяжести E = mgh, у пружины E = kx²/2.'},
+      {h:'🔒 Законы сохранения', t:'<b>Закон сохранения энергии:</b> при отсутствии трения E_к + E_п = const — энергия переходит из одного вида в другой, но полное количество не меняется. <b>Закон сохранения импульса:</b> в замкнутой системе (нет внешних сил) векторная сумма импульсов тел постоянна. Это основа задач на столкновения и отдачу.'},
+      {h:'⚖️ Статика — условия равновесия', t:'Тело в равновесии, если: (1) равнодействующая всех сил равна нулю (ΣF = 0); (2) сумма всех моментов равна нулю (ΣM = 0). <b>Момент силы</b> M = F·d, где d — плечо (расстояние от оси вращения до линии действия силы). Правило равновесия рычага: F₁d₁ = F₂d₂.'},
+    ],
+    quiz:[
+      { q_kk:'2 кг дене 5 м/с жылдамдықпен қозғалады. Кинетикалық энергиясы?', q_ru:'Тело 2 кг движется со скоростью 5 м/с. Кинетическая энергия?',
+        opts:['10 Дж','25 Дж','50 Дж','5 Дж'], ans:1,
+        exp_kk:'E_к = mv²/2 = 2×25/2 = 25 Дж', exp_ru:'E_к = mv²/2 = 2×25/2 = 25 Дж' },
+      { q_kk:'50 Н күші 6 м жол жасайды, α=60°. Жұмыс?', q_ru:'Сила 50 Н перемещает тело на 6 м, α=60°. Работа?',
+        opts:['300 Дж','150 Дж','260 Дж','180 Дж'], ans:1,
+        exp_kk:'A = 50·6·cos60° = 50·6·0.5 = 150 Дж', exp_ru:'A = 50·6·cos60° = 50·6·0.5 = 150 Дж' },
+      { q_kk:'Тұйық жүйеде соқтығысу кезінде сақталатын шама?', q_ru:'Что сохраняется при столкновении в замкнутой системе?',
+        opts_kk:['Тек кинетикалық энергия','Тек импульс','Импульс және кинетикалық энергия','Жылдамдық'],
+        opts_ru:['Только кинетическая энергия','Только импульс','Импульс и кинетическая энергия','Скорость'],
+        ans:1, exp_kk:'Импульс әрқашан сақталады, ал кинетикалық энергия тек серпімді соқтығысуда', exp_ru:'Импульс всегда сохраняется, кинетическая энергия — только при упругом ударе' },
+    ],
+    practice:[
+      { q_kk:'5 кг дене 10 м биіктіктен түседі. Жерге жеткенде жылдамдығын энергия сақталу заңымен табыңыз.',
+        q_ru:'Тело 5 кг падает с высоты 10 м. Найдите скорость у земли через закон сохранения энергии.',
+        steps_kk:[
+          {t:'Энергия сақталу заңы', f:'mgh = mv²/2 → gh = v²/2', ans:''},
+          {t:'Жылдамдық', f:'v = √(2gh) = √(2×10×10)', ans:'v ≈ 14.1 м/с'},
+        ],
+        steps_ru:[
+          {t:'Закон сохранения энергии', f:'mgh = mv²/2 → gh = v²/2', ans:''},
+          {t:'Скорость', f:'v = √(2gh) = √(2×10×10)', ans:'v ≈ 14.1 м/с'},
+        ]
+      }
+    ],
+    videos:[
+      {title_kk:'Энергия сақталу заңы | Есептер', title_ru:'Закон сохранения энергии | Задачи', ch:'Физика ЕНТ', url:'https://www.youtube.com/results?search_query=закон+сохранения+энергии+физика+10'},
+    ]
+  },
+  {
+    id:4, day:'4', icon:'🌡️',
+    kk:{ title:'Молекулярлық физика. Термодинамика', topics:'МКТ негіздері. Идеал газ заңдары. Термодинамика заңдары.', tag:'МКТ — 10 сынып' },
+    ru:{ title:'Молекулярная физика. Термодинамика', topics:'Основы МКТ. Законы идеального газа. Законы термодинамики.', tag:'МКТ — 10 класс' },
+    formulas:[
+      {f:'pV = (m/M)RT', unit:'Па·м³', meaning_kk:'Менделеев-Клапейрон теңдеуі', meaning_ru:'Уравнение Менделеева-Клапейрона',
+        vars:[
+          {s:'p', kk:'газ қысымы', ru:'давление газа', u:'Па'},
+          {s:'V', kk:'газ көлемі', ru:'объём газа', u:'м³'},
+          {s:'m', kk:'газ массасы', ru:'масса газа', u:'кг'},
+          {s:'M', kk:'молярлық масса', ru:'молярная масса', u:'кг/моль'},
+          {s:'R', kk:'универсал газ тұрақтысы (8,31)', ru:'универсальная газовая постоянная (8,31)', u:'Дж/(моль·К)'},
+          {s:'T', kk:'абсолют температура', ru:'абсолютная температура', u:'К'},
+        ]},
+      {f:'p₁V₁/T₁ = p₂V₂/T₂', unit:'—', meaning_kk:'Біріккен газ заңы', meaning_ru:'Объединённый газовый закон',
+        vars:[
+          {s:'p₁,p₂', kk:'бастапқы және соңғы қысым', ru:'начальное и конечное давление', u:'Па'},
+          {s:'V₁,V₂', kk:'бастапқы және соңғы көлем', ru:'начальный и конечный объём', u:'м³'},
+          {s:'T₁,T₂', kk:'бастапқы және соңғы температура', ru:'начальная и конечная температура', u:'К'},
+        ]},
+      {f:'E_к = (3/2)kT', unit:'Дж', meaning_kk:'Молекуланың орташа кинетикалық энергиясы', meaning_ru:'Средняя кинетическая энергия молекулы',
+        vars:[
+          {s:'E_к', kk:'бір молекуланың орташа энергиясы', ru:'средняя энергия одной молекулы', u:'Дж'},
+          {s:'k', kk:'Больцман тұрақтысы (1,38·10⁻²³)', ru:'постоянная Больцмана (1,38·10⁻²³)', u:'Дж/К'},
+          {s:'T', kk:'абсолют температура', ru:'абсолютная температура', u:'К'},
+        ]},
+      {f:'ΔU = Q − A', unit:'Дж', meaning_kk:'Термодинамиканың I заңы', meaning_ru:'Первый закон термодинамики',
+        vars:[
+          {s:'ΔU', kk:'ішкі энергияның өзгерісі', ru:'изменение внутренней энергии', u:'Дж'},
+          {s:'Q', kk:'газға берілген жылу мөлшері', ru:'переданная газу теплота', u:'Дж'},
+          {s:'A', kk:'газдың атқарған жұмысы', ru:'работа, совершённая газом', u:'Дж'},
+        ]},
+      {f:'η = (T₁−T₂)/T₁', unit:'—', meaning_kk:'Карно циклінің ПӘК-і (максималды)', meaning_ru:'КПД цикла Карно (максимальный)',
+        vars:[
+          {s:'η', kk:'жылу машинасының ПӘК-і', ru:'КПД тепловой машины', u:'—'},
+          {s:'T₁', kk:'қыздырғыш температурасы', ru:'температура нагревателя', u:'К'},
+          {s:'T₂', kk:'суытқыш температурасы', ru:'температура холодильника', u:'К'},
+        ]},
+    ],
+    deep_kk:[
+      {h:'🔬 МКТ-ның үш қағидасы', t:'Молекула-кинетикалық теория: (1) барлық зат <b>молекулалар мен атомдардан</b> тұрады; (2) бөлшектер <b>үздіксіз, ретсіз (жылулық) қозғалыста</b>; (3) бөлшектер бір-бірімен <b>тартылады және тебіледі</b>. Дәлелдер: диффузия және броундық қозғалыс.'},
+      {h:'🌡️ Температура мен қысым', t:'<b>Абсолют температура</b> (Кельвин) — молекулалардың орташа кинетикалық энергиясының өлшемі: E = (3/2)kT. Айналдыру: <b>T(K) = t(°C) + 273</b>. <b>Қысым</b> молекулалардың ыдыс қабырғасына соғылуынан туады: p = nkT, мұндағы n — концентрация.'},
+      {h:'📈 Изопроцестер', t:'<b>Изотермиялық</b> (T=const): pV=const — Бойль-Мариотт. <b>Изобаралық</b> (p=const): V/T=const — Гей-Люссак. <b>Изохоралық</b> (V=const): p/T=const — Шарль. Бұл процестерді p–V, p–T, V–T графиктерінде тани білу маңызды.'},
+      {h:'🔥 Термодинамика заңдары', t:'<b>I заң</b> (энергия сақталу): ΔU = Q − A — газға берілген жылу ішкі энергияны арттырады және/немесе газдың жұмысына кетеді. <b>II заң</b>: жылу өздігінен тек ыстық денеден суық денеге өтеді; ПӘК-і 100% жылу машинасын жасау мүмкін емес. Идеал газдың ішкі энергиясы тек температураға тәуелді.'},
+    ],
+    deep_ru:[
+      {h:'🔬 Три положения МКТ', t:'Молекулярно-кинетическая теория: (1) всё вещество состоит из <b>молекул и атомов</b>; (2) частицы находятся в <b>непрерывном беспорядочном (тепловом) движении</b>; (3) частицы <b>притягиваются и отталкиваются</b>. Доказательства: диффузия и броуновское движение.'},
+      {h:'🌡️ Температура и давление', t:'<b>Абсолютная температура</b> (Кельвин) — мера средней кинетической энергии молекул: E = (3/2)kT. Перевод: <b>T(K) = t(°C) + 273</b>. <b>Давление</b> возникает от ударов молекул о стенки сосуда: p = nkT, где n — концентрация частиц.'},
+      {h:'📈 Изопроцессы', t:'<b>Изотермический</b> (T=const): pV=const — закон Бойля-Мариотта. <b>Изобарный</b> (p=const): V/T=const — Гей-Люссака. <b>Изохорный</b> (V=const): p/T=const — Шарля. Важно уметь распознавать эти процессы на графиках p–V, p–T, V–T.'},
+      {h:'🔥 Законы термодинамики', t:'<b>I закон</b> (сохранение энергии): ΔU = Q − A — переданная газу теплота идёт на увеличение внутренней энергии и/или на работу газа. <b>II закон</b>: теплота самопроизвольно переходит только от горячего тела к холодному; нельзя создать машину с КПД 100%. Внутренняя энергия идеального газа зависит только от температуры.'},
+    ],
+    quiz:[
+      { q_kk:'Газ T=const-та компрессияланды: V 2 есе кемді. Қысым?', q_ru:'Газ сжали при T=const: V уменьшился в 2 раза. Давление?',
+        opts_kk:['2 есе артты','4 есе артты','Өзгермеді','2 есе кемді'],
+        opts_ru:['Увеличилось в 2 раза','Увеличилось в 4 раза','Не изменилось','Уменьшилось в 2 раза'],
+        ans:0, exp_kk:'Бойль-Мариотт: p₁V₁ = p₂V₂, V кемісе — p артады', exp_ru:'Бойль-Мариотт: p₁V₁ = p₂V₂, V уменьшился — p увеличивается' },
+      { q_kk:'Термодинамиканың I заңы: ΔU = Q − A. Бұл нені білдіреді?', q_ru:'Первый закон термодинамики: ΔU = Q − A. Что это означает?',
+        opts_kk:['Энергия жоқтан пайда болады','Ішкі энергия жылу мен жұмыстан тұрады','Жылу тек жоғары температурадан төменге ауысады','Карно циклы жетілген'],
+        opts_ru:['Энергия возникает из ничего','Внутренняя энергия определяется теплотой и работой','Тепло переходит только от горячего к холодному','Цикл Карно идеален'],
+        ans:1, exp_kk:'ΔU — ішкі энергия өзгерісі, Q — алынған жылу, A — газ жасаған жұмыс', exp_ru:'ΔU — изменение внутренней энергии, Q — полученная теплота, A — работа газа' },
+      { q_kk:'Карно жылу машинасы T₁=500К, T₂=300К. ПӘК?', q_ru:'Машина Карно: T₁=500К, T₂=300К. КПД?',
+        opts:['40%','60%','50%','30%'], ans:0,
+        exp_kk:'η = 1 − T₂/T₁ = 1 − 300/500 = 0.4 = 40%', exp_ru:'η = 1 − T₂/T₁ = 1 − 300/500 = 0.4 = 40%' },
+    ],
+    practice:[
+      { q_kk:'Газдың бастапқы күйі: p₁=100 кПа, V₁=4 л, T₁=300 К. Т₂=450 К болса, V₂=6 л-де p₂ табыңыз.',
+        q_ru:'Начальное состояние газа: p₁=100 кПа, V₁=4 л, T₁=300 К. При T₂=450 К, V₂=6 л, найдите p₂.',
+        steps_kk:[
+          {t:'Клапейрон теңдеуі', f:'p₁V₁/T₁ = p₂V₂/T₂', ans:''},
+          {t:'p₂ табу', f:'p₂ = p₁V₁T₂/(T₁V₂) = 100·4·450/(300·6)', ans:'p₂ = 100 кПа'},
+        ],
+        steps_ru:[
+          {t:'Уравнение Клапейрона', f:'p₁V₁/T₁ = p₂V₂/T₂', ans:''},
+          {t:'Найти p₂', f:'p₂ = p₁V₁T₂/(T₁V₂) = 100·4·450/(300·6)', ans:'p₂ = 100 кПа'},
+        ]
+      }
+    ],
+    videos:[
+      {title_kk:'Идеал газ заңдары | МКТ', title_ru:'Законы идеального газа | МКТ', ch:'Physics KZ', url:'https://www.youtube.com/results?search_query=законы+идеального+газа+физика'},
+      {title_kk:'Термодинамика бастамалары', title_ru:'Начала термодинамики', ch:'Fizika ЕНТ', url:'https://www.youtube.com/results?search_query=термодинамика+физика+10+класс'},
+    ]
+  },
+  {
+    id:5, day:'5', icon:'⚡',
+    kk:{ title:'Электростатика', topics:'Кулон заңы. Электр өрісі. Потенциал. Конденсатор.', tag:'Электродинамика — 10 сынып' },
+    ru:{ title:'Электростатика', topics:'Закон Кулона. Электрическое поле. Потенциал. Конденсатор.', tag:'Электродинамика — 10 класс' },
+    formulas:[
+      {f:'F = kq₁q₂/r²', unit:'Н', meaning_kk:'Кулон заңы', meaning_ru:'Закон Кулона',
+        vars:[
+          {s:'F', kk:'зарядтардың өзара әсер күші', ru:'сила взаимодействия зарядов', u:'Н'},
+          {s:'k', kk:'Кулон тұрақтысы (9·10⁹)', ru:'постоянная Кулона (9·10⁹)', u:'Н·м²/Кл²'},
+          {s:'q₁,q₂', kk:'зарядтардың шамалары', ru:'величины зарядов', u:'Кл'},
+          {s:'r', kk:'зарядтар арасындағы қашықтық', ru:'расстояние между зарядами', u:'м'},
+        ]},
+      {f:'E = F/q = kQ/r²', unit:'В/м', meaning_kk:'Электр өрісінің кернеулігі', meaning_ru:'Напряжённость электрического поля',
+        vars:[
+          {s:'E', kk:'өріс кернеулігі (вектор)', ru:'напряжённость поля (вектор)', u:'В/м'},
+          {s:'F', kk:'зарядқа әсер ететін күш', ru:'сила на заряд', u:'Н'},
+          {s:'q', kk:'сынақ заряды', ru:'пробный заряд', u:'Кл'},
+          {s:'Q', kk:'өрісті туғызатын заряд', ru:'заряд-источник поля', u:'Кл'},
+          {s:'r', kk:'зарядқа дейінгі қашықтық', ru:'расстояние до заряда', u:'м'},
+        ]},
+      {f:'φ = kQ/r', unit:'В', meaning_kk:'Нүктелік зарядтың потенциалы', meaning_ru:'Потенциал точечного заряда',
+        vars:[
+          {s:'φ', kk:'нүктедегі потенциал', ru:'потенциал в точке', u:'В'},
+          {s:'Q', kk:'өрісті туғызатын заряд', ru:'заряд-источник', u:'Кл'},
+          {s:'r', kk:'зарядқа дейінгі қашықтық', ru:'расстояние до заряда', u:'м'},
+        ]},
+      {f:'C = Q/U = ε₀εS/d', unit:'Ф', meaning_kk:'Конденсатордың электр сыйымдылығы', meaning_ru:'Электроёмкость конденсатора',
+        vars:[
+          {s:'C', kk:'сыйымдылық', ru:'ёмкость', u:'Ф'},
+          {s:'Q', kk:'астардағы заряд', ru:'заряд на обкладке', u:'Кл'},
+          {s:'U', kk:'астарлар арасындағы кернеу', ru:'напряжение между обкладками', u:'В'},
+          {s:'ε', kk:'диэлектрик өтімділігі', ru:'диэлектрическая проницаемость', u:'—'},
+          {s:'S', kk:'астар ауданы', ru:'площадь обкладки', u:'м²'},
+          {s:'d', kk:'астарлар арақашықтығы', ru:'расстояние между обкладками', u:'м'},
+        ]},
+      {f:'W = CU²/2 = Q²/2C', unit:'Дж', meaning_kk:'Зарядталған конденсатор энергиясы', meaning_ru:'Энергия заряженного конденсатора',
+        vars:[
+          {s:'W', kk:'өріс энергиясы', ru:'энергия поля', u:'Дж'},
+          {s:'C', kk:'сыйымдылық', ru:'ёмкость', u:'Ф'},
+          {s:'U', kk:'кернеу', ru:'напряжение', u:'В'},
+          {s:'Q', kk:'заряд', ru:'заряд', u:'Кл'},
+        ]},
+    ],
+    deep_kk:[
+      {h:'⚡ Заряд және Кулон заңы', t:'<b>Электр заряды</b> — бөлшектердің электрмагниттік әсерлесуге түсу қасиеті; ең кіші заряд — элементар заряд e = 1,6·10⁻¹⁹ Кл. <b>Зарядтың сақталу заңы:</b> тұйық жүйеде зарядтардың алгебралық қосындысы тұрақты. <b>Кулон заңы:</b> екі нүктелік зарядтың әсер күші зарядтар көбейтіндісіне тура, ал қашықтық квадратына кері пропорционал. Аттас зарядтар тебіседі, әртектес зарядтар тартылады.'},
+      {h:'🌐 Электр өрісі мен кернеулік', t:'Әрбір заряд айналасында <b>электр өрісін</b> туғызады — басқа зарядтарға күшпен әсер ететін материя түрі. <b>Кернеулік E</b> — өрістің <b>күштік</b> сипаттамасы (вектор), бірлік зарядқа әсер ететін күшке тең. <b>Суперпозиция принципі:</b> бірнеше заряд өрісінің кернеулігі жеке өрістердің векторлық қосындысына тең.'},
+      {h:'🔋 Потенциал және кернеу', t:'<b>Потенциал φ</b> — өрістің <b>энергетикалық</b> сипаттамасы (скаляр). <b>Кернеу (потенциалдар айырмасы)</b> U = φ₁ − φ₂ зарядты бір нүктеден екіншіге көшіргендегі жұмысты анықтайды: A = qU. Біртекті өрісте E = U/d.'},
+      {h:'🔌 Конденсаторлар', t:'<b>Конденсатор</b> — зарядты және электр өрісінің энергиясын жинайтын құрылғы (екі астар + диэлектрик). Сыйымдылық астар ауданына тура, ал арақашықтыққа кері пропорционал. Тізбекті қосуда 1/C = 1/C₁+1/C₂, параллель қосуда C = C₁+C₂.'},
+    ],
+    deep_ru:[
+      {h:'⚡ Заряд и закон Кулона', t:'<b>Электрический заряд</b> — свойство частиц участвовать в электромагнитном взаимодействии; наименьший заряд — элементарный e = 1,6·10⁻¹⁹ Кл. <b>Закон сохранения заряда:</b> в замкнутой системе алгебраическая сумма зарядов постоянна. <b>Закон Кулона:</b> сила взаимодействия двух точечных зарядов прямо пропорциональна произведению зарядов и обратно пропорциональна квадрату расстояния. Одноимённые заряды отталкиваются, разноимённые притягиваются.'},
+      {h:'🌐 Электрическое поле и напряжённость', t:'Вокруг каждого заряда существует <b>электрическое поле</b> — вид материи, действующий силой на другие заряды. <b>Напряжённость E</b> — <b>силовая</b> характеристика поля (вектор), равна силе на единичный заряд. <b>Принцип суперпозиции:</b> напряжённость поля нескольких зарядов равна векторной сумме отдельных полей.'},
+      {h:'🔋 Потенциал и напряжение', t:'<b>Потенциал φ</b> — <b>энергетическая</b> характеристика поля (скаляр). <b>Напряжение (разность потенциалов)</b> U = φ₁ − φ₂ определяет работу по переносу заряда из одной точки в другую: A = qU. В однородном поле E = U/d.'},
+      {h:'🔌 Конденсаторы', t:'<b>Конденсатор</b> — устройство для накопления заряда и энергии электрического поля (две обкладки + диэлектрик). Ёмкость прямо пропорциональна площади обкладок и обратно пропорциональна расстоянию. При последовательном соединении 1/C = 1/C₁+1/C₂, при параллельном C = C₁+C₂.'},
+    ],
+    quiz:[
+      { q_kk:'Кулон заңы бойынша зарядтар арасындағы қашықтық 2 есе артса, күш?', q_ru:'По закону Кулона, если расстояние увеличится в 2 раза, сила?',
+        opts_kk:['2 есе кемиді','4 есе кемиді','2 есе артады','Өзгермейді'],
+        opts_ru:['Уменьшится в 2 раза','Уменьшится в 4 раза','Увеличится в 2 раза','Не изменится'],
+        ans:1, exp_kk:'F ~ 1/r², r 2 есе артса — F 4 есе кемиді', exp_ru:'F ~ 1/r², r увеличился в 2 — F уменьшилась в 4' },
+      { q_kk:'Электр өрісінің кернеулігінің бірлігі?', q_ru:'Единица напряжённости электрического поля?',
+        opts:['В/м','Н·м','Кл','Ф'], ans:0,
+        exp_kk:'E = F/q, [E] = Н/Кл = В/м', exp_ru:'E = F/q, [E] = Н/Кл = В/м' },
+    ],
+    practice:[
+      { q_kk:'q₁=2мкКл, q₂=3мкКл зарядтар r=0.3 м қашықтықта. Олардың өзара іс-әрекет күші?',
+        q_ru:'Заряды q₁=2мкКл, q₂=3мкКл на расстоянии r=0.3 м. Сила взаимодействия?',
+        steps_kk:[
+          {t:'Берілген', f:'k = 9×10⁹ Н·м²/Кл², q₁=2×10⁻⁶, q₂=3×10⁻⁶, r=0.3 м', ans:''},
+          {t:'Кулон заңы', f:'F = kq₁q₂/r² = 9×10⁹·2×10⁻⁶·3×10⁻⁶/0.09', ans:'F = 0.6 Н'},
+        ],
+        steps_ru:[
+          {t:'Дано', f:'k = 9×10⁹ Н·м²/Кл², q₁=2×10⁻⁶, q₂=3×10⁻⁶, r=0.3 м', ans:''},
+          {t:'Закон Кулона', f:'F = kq₁q₂/r² = 9×10⁹·2×10⁻⁶·3×10⁻⁶/0.09', ans:'F = 0.6 Н'},
+        ]
+      }
+    ],
+    videos:[
+      {title_kk:'Электростатика | Кулон заңы', title_ru:'Электростатика | Закон Кулона', ch:'Физика.kz', url:'https://www.youtube.com/results?search_query=электростатика+кулон+физика+10'},
+    ]
+  },
+  {
+    id:6, day:'6', icon:'🔌',
+    kk:{ title:'Тұрақты электр тогы', topics:'Ом заңы. Кирхгоф ережелері. Тізбектер. ЭҚК.', tag:'Электродинамика — 10 сынып' },
+    ru:{ title:'Постоянный электрический ток', topics:'Закон Ома. Правила Кирхгофа. Цепи. ЭДС.', tag:'Электродинамика — 10 класс' },
+    formulas:[
+      {f:'I = U/R', unit:'А', meaning_kk:'Ом заңы (тізбек бөлігі үшін)', meaning_ru:'Закон Ома (для участка цепи)',
+        vars:[
+          {s:'I', kk:'ток күші', ru:'сила тока', u:'А'},
+          {s:'U', kk:'бөліктегі кернеу', ru:'напряжение на участке', u:'В'},
+          {s:'R', kk:'бөліктің кедергісі', ru:'сопротивление участка', u:'Ом'},
+        ]},
+      {f:'I = ε/(R+r)', unit:'А', meaning_kk:'Ом заңы (толық тізбек үшін)', meaning_ru:'Закон Ома (для полной цепи)',
+        vars:[
+          {s:'I', kk:'тізбектегі ток күші', ru:'сила тока в цепи', u:'А'},
+          {s:'ε', kk:'қоректену көзінің ЭҚК-і', ru:'ЭДС источника', u:'В'},
+          {s:'R', kk:'сыртқы кедергі', ru:'внешнее сопротивление', u:'Ом'},
+          {s:'r', kk:'көздің ішкі кедергісі', ru:'внутреннее сопротивление источника', u:'Ом'},
+        ]},
+      {f:'R = ρl/S', unit:'Ом', meaning_kk:'Өткізгіш кедергісі', meaning_ru:'Сопротивление проводника',
+        vars:[
+          {s:'R', kk:'кедергі', ru:'сопротивление', u:'Ом'},
+          {s:'ρ', kk:'меншікті кедергі (материалға тән)', ru:'удельное сопротивление (свойство материала)', u:'Ом·м'},
+          {s:'l', kk:'өткізгіш ұзындығы', ru:'длина проводника', u:'м'},
+          {s:'S', kk:'көлденең қима ауданы', ru:'площадь поперечного сечения', u:'м²'},
+        ]},
+      {f:'P = UI = I²R = U²/R', unit:'Вт', meaning_kk:'Электр тогының қуаты', meaning_ru:'Мощность электрического тока',
+        vars:[
+          {s:'P', kk:'қуат', ru:'мощность', u:'Вт'},
+          {s:'U', kk:'кернеу', ru:'напряжение', u:'В'},
+          {s:'I', kk:'ток күші', ru:'сила тока', u:'А'},
+          {s:'R', kk:'кедергі', ru:'сопротивление', u:'Ом'},
+        ]},
+      {f:'Q = I²Rt', unit:'Дж', meaning_kk:'Джоуль-Ленц заңы (бөлінген жылу)', meaning_ru:'Закон Джоуля-Ленца (выделенная теплота)',
+        vars:[
+          {s:'Q', kk:'бөлінген жылу мөлшері', ru:'количество выделенной теплоты', u:'Дж'},
+          {s:'I', kk:'ток күші', ru:'сила тока', u:'А'},
+          {s:'R', kk:'кедергі', ru:'сопротивление', u:'Ом'},
+          {s:'t', kk:'ток жүру уақыты', ru:'время протекания тока', u:'с'},
+        ]},
+    ],
+    deep_kk:[
+      {h:'🔌 Электр тогы дегеніміз не', t:'<b>Электр тогы</b> — зарядталған бөлшектердің (металдарда — электрондардың) <b>реттелген қозғалысы</b>. Ток пайда болу үшін: (1) еркін зарядтар, (2) электр өрісі (көз) қажет. <b>Ток күші</b> I = q/t — өткізгіштің көлденең қимасынан 1 секундта өтетін заряд. <b>Ток бағыты</b> шартты түрде оң зарядтардың қозғалыс бағыты болып алынады.'},
+      {h:'⚖️ Ом заңы', t:'Тізбек бөлігі үшін <b>ток күші кернеуге тура, кедергіге кері пропорционал</b>: I = U/R. <b>Кедергі R</b> — өткізгіштің токқа қарсыласуы; ол өткізгіш ұзындығына тура, қимасына кері және материалға (ρ) тәуелді. Температура артқанда металдардың кедергісі өседі.'},
+      {h:'🔗 Өткізгіштерді қосу', t:'<b>Тізбекті қосу:</b> ток бірдей I=const, кедергілер қосылады R=R₁+R₂, кернеу бөлінеді. <b>Параллель қосу:</b> кернеу бірдей U=const, кері кедергілер қосылады 1/R=1/R₁+1/R₂, ток тармақталады. Бұл — тізбек есептерінің кілті.'},
+      {h:'🔥 ЭҚК және ток жұмысы', t:'<b>ЭҚК (ε)</b> — көздің бөгде күштерінің зарядты жылжытудағы жұмысын сипаттайды. Толық тізбекте ток I = ε/(R+r). <b>Ток жұмысы</b> A = UIt, <b>қуаты</b> P = UI. <b>Джоуль-Ленц заңы:</b> токтан өткізгіште Q = I²Rt жылуы бөлінеді (қыздырғыш құралдардың негізі).'},
+    ],
+    deep_ru:[
+      {h:'🔌 Что такое электрический ток', t:'<b>Электрический ток</b> — <b>упорядоченное движение</b> заряженных частиц (в металлах — электронов). Для возникновения тока нужны: (1) свободные заряды, (2) электрическое поле (источник). <b>Сила тока</b> I = q/t — заряд, проходящий через сечение проводника за 1 секунду. За <b>направление тока</b> условно принято направление движения положительных зарядов.'},
+      {h:'⚖️ Закон Ома', t:'Для участка цепи <b>сила тока прямо пропорциональна напряжению и обратно пропорциональна сопротивлению</b>: I = U/R. <b>Сопротивление R</b> — препятствие току; оно прямо пропорционально длине проводника, обратно — площади сечения, и зависит от материала (ρ). При нагревании сопротивление металлов растёт.'},
+      {h:'🔗 Соединение проводников', t:'<b>Последовательное:</b> ток одинаков I=const, сопротивления складываются R=R₁+R₂, напряжение делится. <b>Параллельное:</b> напряжение одинаково U=const, складываются обратные сопротивления 1/R=1/R₁+1/R₂, ток ветвится. Это ключ к решению задач на цепи.'},
+      {h:'🔥 ЭДС и работа тока', t:'<b>ЭДС (ε)</b> характеризует работу сторонних сил источника по перемещению заряда. В полной цепи ток I = ε/(R+r). <b>Работа тока</b> A = UIt, <b>мощность</b> P = UI. <b>Закон Джоуля-Ленца:</b> при прохождении тока в проводнике выделяется теплота Q = I²Rt (основа нагревательных приборов).'},
+    ],
+    quiz:[
+      { q_kk:'R=10 Ом, U=20 В. Ток?', q_ru:'R=10 Ом, U=20 В. Ток?',
+        opts:['0.5 А','2 А','200 А','10 А'], ans:1,
+        exp_kk:'I = U/R = 20/10 = 2 А', exp_ru:'I = U/R = 20/10 = 2 А' },
+      { q_kk:'Кезекті қосылған 3 Ом және 7 Ом. Жалпы кедергі?', q_ru:'Последовательно 3 Ом и 7 Ом. Общее сопротивление?',
+        opts:['2.1 Ом','10 Ом','4 Ом','21 Ом'], ans:1,
+        exp_kk:'R_кез = R₁ + R₂ = 3 + 7 = 10 Ом', exp_ru:'R_посл = R₁ + R₂ = 3 + 7 = 10 Ом' },
+      { q_kk:'5А ток, 4 Ом, 10 с. Бөлінген жылу?', q_ru:'Ток 5А, R=4 Ом, t=10 с. Выделенная теплота?',
+        opts:['200 Дж','1000 Дж','2000 Дж','500 Дж'], ans:1,
+        exp_kk:'Q = I²Rt = 25×4×10 = 1000 Дж', exp_ru:'Q = I²Rt = 25×4×10 = 1000 Дж' },
+    ],
+    practice:[
+      { q_kk:'ЭҚК=12 В, ішкі r=1 Ом, сыртқы R=5 Ом. Ток, сыртқы кернеу, қуатты табыңыз.',
+        q_ru:'ЭДС=12 В, внутреннее r=1 Ом, внешнее R=5 Ом. Найдите ток, внешнее напряжение, мощность.',
+        steps_kk:[
+          {t:'Ток', f:'I = ε/(R+r) = 12/(5+1)', ans:'I = 2 А'},
+          {t:'Сыртқы кернеу', f:'U = IR = 2×5', ans:'U = 10 В'},
+          {t:'Қуат', f:'P = UI = 10×2', ans:'P = 20 Вт'},
+        ],
+        steps_ru:[
+          {t:'Ток', f:'I = ε/(R+r) = 12/(5+1)', ans:'I = 2 А'},
+          {t:'Внешнее напряжение', f:'U = IR = 2×5', ans:'U = 10 В'},
+          {t:'Мощность', f:'P = UI = 10×2', ans:'P = 20 Вт'},
+        ]
+      }
+    ],
+    videos:[
+      {title_kk:'Ом заңы | Тізбектер', title_ru:'Закон Ома | Цепи', ch:'Физика Ресурстары', url:'https://www.youtube.com/results?search_query=закон+ома+физика+10+класс'},
+    ]
+  },
+  {
+    id:7, day:'7', icon:'🧲',
+    kk:{ title:'Магнетизм. Электромагниттік индукция', topics:'Магнит өрісі. Ампер, Лоренц күштері. Фарадей заңы. Ленц ережесі.', tag:'Электродинамика — 10 сынып' },
+    ru:{ title:'Магнетизм. Электромагнитная индукция', topics:'Магнитное поле. Силы Ампера, Лоренца. Закон Фарадея. Правило Ленца.', tag:'Электродинамика — 10 класс' },
+    formulas:[
+      {f:'F_А = BIl·sinα', unit:'Н', meaning_kk:'Ампер күші (токты өткізгішке)', meaning_ru:'Сила Ампера (на проводник с током)',
+        vars:[
+          {s:'F_А', kk:'Ампер күші', ru:'сила Ампера', u:'Н'},
+          {s:'B', kk:'магнит индукциясы', ru:'магнитная индукция', u:'Тл'},
+          {s:'I', kk:'өткізгіштегі ток күші', ru:'сила тока в проводнике', u:'А'},
+          {s:'l', kk:'өткізгіш ұзындығы', ru:'длина проводника', u:'м'},
+          {s:'α', kk:'ток пен B арасындағы бұрыш', ru:'угол между током и B', u:'°'},
+        ]},
+      {f:'F_Л = qvB·sinα', unit:'Н', meaning_kk:'Лоренц күші (қозғалған зарядқа)', meaning_ru:'Сила Лоренца (на движущийся заряд)',
+        vars:[
+          {s:'F_Л', kk:'Лоренц күші', ru:'сила Лоренца', u:'Н'},
+          {s:'q', kk:'бөлшек заряды', ru:'заряд частицы', u:'Кл'},
+          {s:'v', kk:'бөлшек жылдамдығы', ru:'скорость частицы', u:'м/с'},
+          {s:'B', kk:'магнит индукциясы', ru:'магнитная индукция', u:'Тл'},
+          {s:'α', kk:'v пен B арасындағы бұрыш', ru:'угол между v и B', u:'°'},
+        ]},
+      {f:'Φ = BS·cosα', unit:'Вб', meaning_kk:'Магнит ағыны', meaning_ru:'Магнитный поток',
+        vars:[
+          {s:'Φ', kk:'магнит ағыны', ru:'магнитный поток', u:'Вб'},
+          {s:'B', kk:'магнит индукциясы', ru:'магнитная индукция', u:'Тл'},
+          {s:'S', kk:'контур ауданы', ru:'площадь контура', u:'м²'},
+          {s:'α', kk:'B мен бет нормалі арасындағы бұрыш', ru:'угол между B и нормалью к площадке', u:'°'},
+        ]},
+      {f:'ε = −ΔΦ/Δt', unit:'В', meaning_kk:'Электромагниттік индукция ЭҚК-і (Фарадей)', meaning_ru:'ЭДС электромагнитной индукции (Фарадей)',
+        vars:[
+          {s:'ε', kk:'индукция ЭҚК-і', ru:'ЭДС индукции', u:'В'},
+          {s:'ΔΦ', kk:'магнит ағынының өзгерісі', ru:'изменение магнитного потока', u:'Вб'},
+          {s:'Δt', kk:'өзгеру уақыты', ru:'время изменения', u:'с'},
+          {s:'(−)', kk:'Ленц ережесінің таңбасы', ru:'знак правила Ленца', u:'—'},
+        ]},
+      {f:'L = μ₀n²V', unit:'Гн', meaning_kk:'Катушканың индуктивтілігі', meaning_ru:'Индуктивность катушки',
+        vars:[
+          {s:'L', kk:'индуктивтілік', ru:'индуктивность', u:'Гн'},
+          {s:'μ₀', kk:'магниттік тұрақты', ru:'магнитная постоянная', u:'Гн/м'},
+          {s:'n', kk:'орам тығыздығы (N/l)', ru:'плотность витков (N/l)', u:'1/м'},
+          {s:'V', kk:'катушка көлемі', ru:'объём катушки', u:'м³'},
+        ]},
+    ],
+    deep_kk:[
+      {h:'🧲 Магнит өрісі', t:'<b>Магнит өрісі</b> — қозғалған зарядтар (ток) айналасында пайда болатын материя түрі, тек <b>қозғалған зарядтар мен токтарға</b> әсер етеді. Күштік сипаттамасы — <b>магнит индукциясы B</b> (вектор, бірлігі — Тесла). Өріс бағытын <b>оң қол / бұрағыш ережесімен</b> анықтайды.'},
+      {h:'💪 Ампер мен Лоренц күштері', t:'<b>Ампер күші</b> магнит өрісінің токты өткізгішке әсері: F = BIl·sinα. <b>Лоренц күші</b> магнит өрісінің жеке қозғалған зарядқа әсері: F = qvB·sinα. Екі күштің де бағытын <b>сол қол ережесімен</b> табады. Лоренц күші жылдамдыққа перпендикуляр болғандықтан жұмыс жасамайды, тек траекторияны (шеңберге) бұрады.'},
+      {h:'🔄 Электромагниттік индукция', t:'<b>Фарадей тәжірибесі:</b> контур арқылы өтетін магнит ағыны өзгергенде, контурда <b>индукциялық ток</b> пайда болады. Индукция ЭҚК-і ағынның өзгеру жылдамдығына тең: ε = −ΔΦ/Δt. Ағын B, S немесе α-ны өзгерту арқылы өзгереді.'},
+      {h:'↩️ Ленц ережесі', t:'<b>Индукциялық ток</b> әрқашан өзін тудырған себепке <b>қарсы әрекет етеді</b> (формуладағы «минус» соны білдіреді). Бұл — энергия сақталу заңының салдары. <b>Өздік индукция:</b> токтың өзгеруі катушкада өзіне кедергі жасайтын ЭҚК тудырады (L — индуктивтілік).'},
+    ],
+    deep_ru:[
+      {h:'🧲 Магнитное поле', t:'<b>Магнитное поле</b> — вид материи, возникающий вокруг движущихся зарядов (тока) и действующий только на <b>движущиеся заряды и токи</b>. Силовая характеристика — <b>магнитная индукция B</b> (вектор, единица — Тесла). Направление поля определяют <b>правилом правой руки / буравчика</b>.'},
+      {h:'💪 Силы Ампера и Лоренца', t:'<b>Сила Ампера</b> — действие магнитного поля на проводник с током: F = BIl·sinα. <b>Сила Лоренца</b> — действие поля на отдельный движущийся заряд: F = qvB·sinα. Направление обеих находят <b>правилом левой руки</b>. Сила Лоренца перпендикулярна скорости, поэтому работы не совершает, а лишь искривляет траекторию (в окружность).'},
+      {h:'🔄 Электромагнитная индукция', t:'<b>Опыт Фарадея:</b> при изменении магнитного потока через контур в нём возникает <b>индукционный ток</b>. ЭДС индукции равна быстроте изменения потока: ε = −ΔΦ/Δt. Поток меняется при изменении B, S или угла α.'},
+      {h:'↩️ Правило Ленца', t:'<b>Индукционный ток</b> всегда <b>противодействует</b> причине, его вызвавшей (это и означает «минус» в формуле). Это следствие закона сохранения энергии. <b>Самоиндукция:</b> изменение тока порождает в катушке ЭДС, препятствующую этому изменению (L — индуктивность).'},
+    ],
+    quiz:[
+      { q_kk:'B=0.5 Тл, I=4 А, l=2 м, α=90°. Ампер күші?', q_ru:'B=0.5 Тл, I=4 А, l=2 м, α=90°. Сила Ампера?',
+        opts:['4 Н','2 Н','1 Н','8 Н'], ans:0,
+        exp_kk:'F = BIl·sin90° = 0.5×4×2×1 = 4 Н', exp_ru:'F = BIl·sin90° = 0.5×4×2×1 = 4 Н' },
+      { q_kk:'Магниттік ағын 0.5 с ішінде 2 Вб-ден 0-ге дейін кемиді. Индукциялық ЭҚК?', q_ru:'Магнитный поток уменьшается с 2 Вб до 0 за 0.5 с. ЭДС индукции?',
+        opts:['1 В','4 В','0.25 В','2 В'], ans:1,
+        exp_kk:'|ε| = |ΔΦ/Δt| = 2/0.5 = 4 В', exp_ru:'|ε| = |ΔΦ/Δt| = 2/0.5 = 4 В' },
+    ],
+    practice:[
+      { q_kk:'Электрон B=0.2 Тл өрісінде v=10⁶ м/с жылдамдықпен перпендикуляр қозғалады. Лоренц күші?',
+        q_ru:'Электрон движется перпендикулярно к B=0.2 Тл со скоростью v=10⁶ м/с. Сила Лоренца?',
+        steps_kk:[
+          {t:'Берілген', f:'q = 1.6×10⁻¹⁹ Кл, v=10⁶ м/с, B=0.2 Тл, sin90°=1', ans:''},
+          {t:'Лоренц күші', f:'F = qvB = 1.6×10⁻¹⁹×10⁶×0.2', ans:'F = 3.2×10⁻¹⁴ Н'},
+        ],
+        steps_ru:[
+          {t:'Дано', f:'q = 1.6×10⁻¹⁹ Кл, v=10⁶ м/с, B=0.2 Тл, sin90°=1', ans:''},
+          {t:'Сила Лоренца', f:'F = qvB = 1.6×10⁻¹⁹×10⁶×0.2', ans:'F = 3.2×10⁻¹⁴ Н'},
+        ]
+      }
+    ],
+    videos:[
+      {title_kk:'Электромагниттік индукция | Фарадей', title_ru:'ЭМ индукция | Закон Фарадея', ch:'Fizika KZ', url:'https://www.youtube.com/results?search_query=электромагнитная+индукция+физика+10'},
+    ]
+  },
+  {
+    id:8, day:'8', icon:'〰️',
+    kk:{ title:'Механикалық және ЭМ тербелістер', topics:'Гармоникалық тербеліс. LC-тізбек. Резонанс. Толқындар.', tag:'Тербелістер — 11 сынып' },
+    ru:{ title:'Механические и ЭМ колебания', topics:'Гармоническое колебание. LC-цепь. Резонанс. Волны.', tag:'Колебания — 11 класс' },
+    formulas:[
+      {f:'x = A·cos(ωt + φ₀)', unit:'м', meaning_kk:'Гармоникалық тербеліс теңдеуі', meaning_ru:'Уравнение гармонического колебания',
+        vars:[
+          {s:'x', kk:'t уақыттағы ығысу', ru:'смещение в момент t', u:'м'},
+          {s:'A', kk:'амплитуда (максималды ығысу)', ru:'амплитуда (максимальное смещение)', u:'м'},
+          {s:'ω', kk:'циклдік (бұрыштық) жиілік', ru:'циклическая (угловая) частота', u:'рад/с'},
+          {s:'t', kk:'уақыт', ru:'время', u:'с'},
+          {s:'φ₀', kk:'бастапқы фаза', ru:'начальная фаза', u:'рад'},
+        ]},
+      {f:'T = 2π√(l/g)', unit:'с', meaning_kk:'Математикалық маятник периоды', meaning_ru:'Период математического маятника',
+        vars:[
+          {s:'T', kk:'тербеліс периоды', ru:'период колебаний', u:'с'},
+          {s:'l', kk:'маятник ұзындығы', ru:'длина маятника', u:'м'},
+          {s:'g', kk:'еркін түсу үдеуі', ru:'ускорение свободного падения', u:'м/с²'},
+        ]},
+      {f:'T = 2π√(LC)', unit:'с', meaning_kk:'Тейлор формуласы (LC-контур периоды)', meaning_ru:'Формула Томсона (период LC-контура)',
+        vars:[
+          {s:'T', kk:'ЭМ тербеліс периоды', ru:'период ЭМ колебаний', u:'с'},
+          {s:'L', kk:'катушка индуктивтілігі', ru:'индуктивность катушки', u:'Гн'},
+          {s:'C', kk:'конденсатор сыйымдылығы', ru:'ёмкость конденсатора', u:'Ф'},
+        ]},
+      {f:'ω = 2π/T = 2πf', unit:'рад/с', meaning_kk:'Циклдік жиілік', meaning_ru:'Циклическая частота',
+        vars:[
+          {s:'ω', kk:'циклдік жиілік', ru:'циклическая частота', u:'рад/с'},
+          {s:'T', kk:'период', ru:'период', u:'с'},
+          {s:'f', kk:'жиілік (1 с-тағы тербеліс саны)', ru:'частота (число колебаний за 1 с)', u:'Гц'},
+        ]},
+      {f:'v = λf = λ/T', unit:'м/с', meaning_kk:'Толқын таралу жылдамдығы', meaning_ru:'Скорость распространения волны',
+        vars:[
+          {s:'v', kk:'толқын жылдамдығы', ru:'скорость волны', u:'м/с'},
+          {s:'λ', kk:'толқын ұзындығы', ru:'длина волны', u:'м'},
+          {s:'f', kk:'жиілік', ru:'частота', u:'Гц'},
+          {s:'T', kk:'период', ru:'период', u:'с'},
+        ]},
+    ],
+    deep_kk:[
+      {h:'〰️ Тербеліс негіздері', t:'<b>Тербеліс</b> — белгілі уақыт аралығында қайталанатын процесс. <b>Период T</b> — бір толық тербеліс уақыты; <b>жиілік f</b> — 1 секундтағы тербеліс саны (f = 1/T). <b>Амплитуда A</b> — тепе-теңдік қалпынан максималды ауытқу. <b>Гармоникалық тербеліс</b> — синус (косинус) заңымен өтетін тербеліс; оны қайтарушы күш F = −kx тудырады.'},
+      {h:'⏱️ Маятниктер', t:'<b>Математикалық маятник</b> периоды T = 2π√(l/g) тек ұзындыққа және g-ға тәуелді, массаға тәуелсіз. <b>Серіппелі маятник</b> периоды T = 2π√(m/k) массаға және серіппе қатаңдығына тәуелді. Маятникте энергия кинетикалықтан потенциалдыққа үздіксіз ауысады.'},
+      {h:'📡 Электромагниттік тербелістер', t:'<b>LC-контур</b> (тербелмелі контур) — катушка мен конденсатор тізбегі. Онда конденсатордың электр өрісі энергиясы катушканың магнит өрісі энергиясына кезек-кезек ауысады. Период Томсон формуласымен: T = 2π√(LC).'},
+      {h:'🌊 Толқындар мен резонанс', t:'<b>Толқын</b> — тербелістің кеңістікте таралуы. <b>Көлденең</b> толқында бөлшектер таралу бағытына перпендикуляр (жарық), <b>қума</b> толқында — бойымен (дыбыс) тербеледі. Негізгі байланыс: v = λf. <b>Резонанс</b> — сыртқы әсер жиілігі дененің меншікті жиілігіне тең болғанда амплитуданың күрт артуы.'},
+    ],
+    deep_ru:[
+      {h:'〰️ Основы колебаний', t:'<b>Колебание</b> — процесс, повторяющийся через равные промежутки времени. <b>Период T</b> — время одного полного колебания; <b>частота f</b> — число колебаний за 1 секунду (f = 1/T). <b>Амплитуда A</b> — максимальное отклонение от положения равновесия. <b>Гармоническое колебание</b> происходит по закону синуса (косинуса); его вызывает возвращающая сила F = −kx.'},
+      {h:'⏱️ Маятники', t:'Период <b>математического маятника</b> T = 2π√(l/g) зависит только от длины и g, не зависит от массы. Период <b>пружинного маятника</b> T = 2π√(m/k) зависит от массы и жёсткости пружины. В маятнике энергия непрерывно переходит из кинетической в потенциальную.'},
+      {h:'📡 Электромагнитные колебания', t:'<b>LC-контур</b> (колебательный контур) — цепь из катушки и конденсатора. В нём энергия электрического поля конденсатора периодически переходит в энергию магнитного поля катушки. Период по формуле Томсона: T = 2π√(LC).'},
+      {h:'🌊 Волны и резонанс', t:'<b>Волна</b> — распространение колебаний в пространстве. В <b>поперечной</b> волне частицы колеблются перпендикулярно направлению (свет), в <b>продольной</b> — вдоль него (звук). Основная связь: v = λf. <b>Резонанс</b> — резкое возрастание амплитуды, когда частота внешнего воздействия совпадает с собственной частотой тела.'},
+    ],
+    quiz:[
+      { q_kk:'Маятник ұзындығы l=4×g/(4π²). Периоды?', q_ru:'Маятник длиной l=4×g/(4π²). Период?',
+        opts:['1 с','2 с','4 с','0.5 с'], ans:1,
+        exp_kk:'T = 2π√(l/g) = 2π√(4/4π²) = 2π·(1/π) = 2 с', exp_ru:'T = 2π√(l/g) = 2π√(4/4π²) = 2π·(1/π) = 2 с' },
+      { q_kk:'Резонанс дегеніміз не?', q_ru:'Что такое резонанс?',
+        opts_kk:['Толқын сөніп кету','Жиіліктер сәйкескенде амплитуда максимумы','Тербеліс тоқталуы','Энергия жоғалуы'],
+        opts_ru:['Затухание волны','Максимум амплитуды при совпадении частот','Остановка колебаний','Потеря энергии'],
+        ans:1, exp_kk:'Сыртқы жиілік меншікті жиілікке тең болғанда резонанс болады', exp_ru:'Резонанс наступает при совпадении внешней и собственной частот' },
+    ],
+    practice:[
+      { q_kk:'LC-контурда L=0.1 Гн, C=10 мкФ. Периоды мен жиілігін табыңыз.',
+        q_ru:'В LC-контуре L=0.1 Гн, C=10 мкФ. Найдите период и частоту.',
+        steps_kk:[
+          {t:'Берілген', f:'L=0.1 Гн, C=10⁻⁵ Ф', ans:''},
+          {t:'Период', f:'T = 2π√(LC) = 2π√(0.1·10⁻⁵) = 2π·10⁻³', ans:'T ≈ 6.28×10⁻³ с'},
+          {t:'Жиілік', f:'f = 1/T = 1/(6.28×10⁻³)', ans:'f ≈ 159 Гц'},
+        ],
+        steps_ru:[
+          {t:'Дано', f:'L=0.1 Гн, C=10⁻⁵ Ф', ans:''},
+          {t:'Период', f:'T = 2π√(LC) = 2π√(0.1·10⁻⁵) = 2π·10⁻³', ans:'T ≈ 6.28×10⁻³ с'},
+          {t:'Частота', f:'f = 1/T = 1/(6.28×10⁻³)', ans:'f ≈ 159 Гц'},
+        ]
+      }
+    ],
+    videos:[
+      {title_kk:'Гармоникалық тербелістер | 11 сынып', title_ru:'Гармонические колебания | 11 класс', ch:'Physics 11 KZ', url:'https://www.youtube.com/results?search_query=механические+колебания+физика+11+класс'},
+    ]
+  },
+  {
+    id:9, day:'9', icon:'🌊',
+    kk:{ title:'Геометриялық оптика. Толқын оптикасы', topics:'Жарық заңдары. Жарықтың шағылысуы, сынуы, дифракциясы.', tag:'Оптика — 11 сынып' },
+    ru:{ title:'Геометрическая и волновая оптика', topics:'Законы света. Отражение, преломление, дифракция света.', tag:'Оптика — 11 класс' },
+    formulas:[
+      {f:'n = c/v', unit:'—', meaning_kk:'Заттың сыну көрсеткіші', meaning_ru:'Показатель преломления среды',
+        vars:[
+          {s:'n', kk:'абсолют сыну көрсеткіші', ru:'абсолютный показатель преломления', u:'—'},
+          {s:'c', kk:'вакуумдағы жарық жылдамдығы (3·10⁸)', ru:'скорость света в вакууме (3·10⁸)', u:'м/с'},
+          {s:'v', kk:'заттағы жарық жылдамдығы', ru:'скорость света в среде', u:'м/с'},
+        ]},
+      {f:'n₁sinα = n₂sinβ', unit:'—', meaning_kk:'Снеллиус (жарықтың сыну) заңы', meaning_ru:'Закон Снеллиуса (преломления света)',
+        vars:[
+          {s:'n₁,n₂', kk:'1 және 2 орталардың сыну көрсеткіштері', ru:'показатели преломления сред 1 и 2', u:'—'},
+          {s:'α', kk:'түсу бұрышы', ru:'угол падения', u:'°'},
+          {s:'β', kk:'сыну бұрышы', ru:'угол преломления', u:'°'},
+        ]},
+      {f:"1/F = 1/d + 1/f", unit:'м⁻¹', meaning_kk:'Жұқа линза формуласы', meaning_ru:'Формула тонкой линзы',
+        vars:[
+          {s:'F', kk:'линзаның фокус аралығы', ru:'фокусное расстояние линзы', u:'м'},
+          {s:'d', kk:'заттан линзаға дейінгі қашықтық', ru:'расстояние от предмета до линзы', u:'м'},
+          {s:'f', kk:'линзадан кескінге дейінгі қашықтық', ru:'расстояние от линзы до изображения', u:'м'},
+        ]},
+      {f:'D = 1/F', unit:'Дптр', meaning_kk:'Линзаның оптикалық күші', meaning_ru:'Оптическая сила линзы',
+        vars:[
+          {s:'D', kk:'оптикалық күш', ru:'оптическая сила', u:'дптр'},
+          {s:'F', kk:'фокус аралығы (метрмен)', ru:'фокусное расстояние (в метрах)', u:'м'},
+        ]},
+      {f:'Δd = kλ', unit:'м', meaning_kk:'Интерференция максимумы шарты', meaning_ru:'Условие максимума интерференции',
+        vars:[
+          {s:'Δd', kk:'жол айырымы', ru:'разность хода лучей', u:'м'},
+          {s:'k', kk:'максимум реті (бүтін сан)', ru:'порядок максимума (целое число)', u:'—'},
+          {s:'λ', kk:'жарық толқынының ұзындығы', ru:'длина световой волны', u:'м'},
+        ]},
+    ],
+    deep_kk:[
+      {h:'💡 Жарық табиғаты', t:'Жарық — <b>қос табиғатты</b> (дуализм): кейбір құбылыстарда толқын (интерференция, дифракция), басқаларында бөлшек — фотон (фотоэффект) ретінде көрінеді. Вакуумдағы жарық жылдамдығы c = 3·10⁸ м/с — табиғаттағы ең үлкен жылдамдық.'},
+      {h:'🪞 Шағылу мен сыну', t:'<b>Шағылу заңы:</b> түсу бұрышы шағылу бұрышына тең (α = γ). <b>Сыну заңы (Снеллиус):</b> тығызырақ ортаға өткенде сәуле нормальға жақындайды. <b>Сыну көрсеткіші</b> n = c/v заттағы жарықтың қаншалықты баяулайтынын көрсетеді. <b>Толық ішкі шағылу:</b> тығыз ортадан өткенде түсу бұрышы шектік бұрыштан асса, жарық толығымен шағылады (талшықты оптика негізі).'},
+      {h:'🔍 Линзалар мен кескін', t:'<b>Жинағыш линза</b> (F > 0) параллель сәулелерді бір нүктеге жинайды; <b>шашыратқыш линза</b> (F < 0) оларды таратады. <b>Оптикалық күш</b> D = 1/F диоптриямен өлшенеді. Линза формуласымен кескіннің орны мен түрін (нақты/жалған, тура/кері, үлкейген/кішірейген) есептейді.'},
+      {h:'🌈 Толқындық оптика', t:'<b>Интерференция</b> — екі когерентті толқынның қосылып, кей жерде күшейіп (максимум), кей жерде әлсіреуі (минимум). <b>Дифракция</b> — толқынның кедергіні орағытып өтуі. Бұл екі құбылыс жарықтың <b>толқындық табиғатын</b> дәлелдейді. Дифракциялық тор жарықты спектрге жіктейді.'},
+    ],
+    deep_ru:[
+      {h:'💡 Природа света', t:'Свет имеет <b>двойственную природу</b> (дуализм): в одних явлениях проявляет себя как волна (интерференция, дифракция), в других — как частица-фотон (фотоэффект). Скорость света в вакууме c = 3·10⁸ м/с — наибольшая скорость в природе.'},
+      {h:'🪞 Отражение и преломление', t:'<b>Закон отражения:</b> угол падения равен углу отражения (α = γ). <b>Закон преломления (Снеллиуса):</b> при переходе в более плотную среду луч приближается к нормали. <b>Показатель преломления</b> n = c/v показывает, во сколько раз свет замедляется в среде. <b>Полное внутреннее отражение:</b> если при выходе из плотной среды угол падения больше предельного, свет полностью отражается (основа волоконной оптики).'},
+      {h:'🔍 Линзы и изображение', t:'<b>Собирающая линза</b> (F > 0) сводит параллельные лучи в точку; <b>рассеивающая</b> (F < 0) их расходит. <b>Оптическая сила</b> D = 1/F измеряется в диоптриях. По формуле линзы вычисляют положение и характер изображения (действительное/мнимое, прямое/перевёрнутое, увеличенное/уменьшенное).'},
+      {h:'🌈 Волновая оптика', t:'<b>Интерференция</b> — наложение двух когерентных волн: в одних точках они усиливаются (максимум), в других гасят друг друга (минимум). <b>Дифракция</b> — огибание волной препятствий. Оба явления доказывают <b>волновую природу</b> света. Дифракционная решётка разлагает свет в спектр.'},
+    ],
+    quiz:[
+      { q_kk:'Линзаның фокус аралығы F=25 см. Оптикалық күші?', q_ru:'Фокусное расстояние линзы F=25 см. Оптическая сила?',
+        opts:['4 Дптр','25 Дптр','0.25 Дптр','2.5 Дптр'], ans:0,
+        exp_kk:'D = 1/F = 1/0.25 = 4 Дптр', exp_ru:'D = 1/F = 1/0.25 = 4 Дптр' },
+      { q_kk:'Заттың сыну көрсеткіші n=1.5. Жарықтың жылдамдығы?', q_ru:'Показатель преломления n=1.5. Скорость света в веществе?',
+        opts:['3×10⁸ м/с','2×10⁸ м/с','1.5×10⁸ м/с','4.5×10⁸ м/с'], ans:1,
+        exp_kk:'v = c/n = 3×10⁸/1.5 = 2×10⁸ м/с', exp_ru:'v = c/n = 3×10⁸/1.5 = 2×10⁸ м/с' },
+    ],
+    practice:[
+      { q_kk:'Жинаушы линза F=20 см. Зат d=30 см арақашықтықта. Кескін қайда жасалады?',
+        q_ru:'Собирающая линза F=20 см. Предмет на d=30 см. Где строится изображение?',
+        steps_kk:[
+          {t:'Линза формуласы', f:'1/d\' = 1/F − 1/d = 1/20 − 1/30 = (3−2)/60 = 1/60', ans:''},
+          {t:'Кескін аралығы', f:'d\' = 60 см', ans:'Нақты, кесілген кескін'},
+        ],
+        steps_ru:[
+          {t:'Формула линзы', f:'1/d\' = 1/F − 1/d = 1/20 − 1/30 = (3−2)/60 = 1/60', ans:''},
+          {t:'Расстояние до изображения', f:'d\' = 60 см', ans:'Действительное, перевёрнутое'},
+        ]
+      }
+    ],
+    videos:[
+      {title_kk:'Геометриялық оптика | Линза', title_ru:'Геометрическая оптика | Линзы', ch:'Optika KZ', url:'https://www.youtube.com/results?search_query=геометрическая+оптика+физика+11+класс'},
+    ]
+  },
+  {
+    id:10, day:'10', icon:'⚛️',
+    kk:{ title:'Кванттық физика. Атом құрылысы', topics:'Фотоэффект. Планк гипотезасы. Бор теориясы. Атом ядросы.', tag:'Кванттық физика — 11 сынып' },
+    ru:{ title:'Квантовая физика. Строение атома', topics:'Фотоэффект. Гипотеза Планка. Теория Бора. Ядро атома.', tag:'Квантовая физика — 11 класс' },
+    formulas:[
+      {f:'E = hν = hc/λ', unit:'Дж', meaning_kk:'Фотон энергиясы', meaning_ru:'Энергия фотона',
+        vars:[
+          {s:'E', kk:'фотон энергиясы', ru:'энергия фотона', u:'Дж'},
+          {s:'h', kk:'Планк тұрақтысы (6,63·10⁻³⁴)', ru:'постоянная Планка (6,63·10⁻³⁴)', u:'Дж·с'},
+          {s:'ν', kk:'жарық жиілігі', ru:'частота света', u:'Гц'},
+          {s:'c', kk:'жарық жылдамдығы', ru:'скорость света', u:'м/с'},
+          {s:'λ', kk:'толқын ұзындығы', ru:'длина волны', u:'м'},
+        ]},
+      {f:'hν = A_шығу + mv²/2', unit:'Дж', meaning_kk:'Эйнштейннің фотоэффект теңдеуі', meaning_ru:'Уравнение Эйнштейна для фотоэффекта',
+        vars:[
+          {s:'hν', kk:'түскен фотон энергиясы', ru:'энергия падающего фотона', u:'Дж'},
+          {s:'A_шығу', kk:'электронның шығу жұмысы', ru:'работа выхода электрона', u:'Дж'},
+          {s:'mv²/2', kk:'электронның максималды кинетикалық энергиясы', ru:'макс. кинетическая энергия электрона', u:'Дж'},
+        ]},
+      {f:'E = mc²', unit:'Дж', meaning_kk:'Масса мен энергияның байланысы (Эйнштейн)', meaning_ru:'Связь массы и энергии (Эйнштейн)',
+        vars:[
+          {s:'E', kk:'тыныштық энергиясы', ru:'энергия покоя', u:'Дж'},
+          {s:'m', kk:'дене массасы', ru:'масса тела', u:'кг'},
+          {s:'c', kk:'жарық жылдамдығы (3·10⁸)', ru:'скорость света (3·10⁸)', u:'м/с'},
+        ]},
+      {f:'λ = h/(mv)', unit:'м', meaning_kk:'де Бройль толқынының ұзындығы', meaning_ru:'Длина волны де Бройля',
+        vars:[
+          {s:'λ', kk:'бөлшектің толқын ұзындығы', ru:'длина волны частицы', u:'м'},
+          {s:'h', kk:'Планк тұрақтысы', ru:'постоянная Планка', u:'Дж·с'},
+          {s:'m', kk:'бөлшек массасы', ru:'масса частицы', u:'кг'},
+          {s:'v', kk:'бөлшек жылдамдығы', ru:'скорость частицы', u:'м/с'},
+        ]},
+      {f:'eU_тыйым = mv²/2', unit:'Дж', meaning_kk:'Тыйым салушы кернеу (фотоэлектрондар)', meaning_ru:'Запирающее напряжение (фотоэлектроны)',
+        vars:[
+          {s:'e', kk:'электрон заряды (1,6·10⁻¹⁹)', ru:'заряд электрона (1,6·10⁻¹⁹)', u:'Кл'},
+          {s:'U_тыйым', kk:'тыйым салушы кернеу', ru:'запирающее напряжение', u:'В'},
+          {s:'mv²/2', kk:'фотоэлектронның кинетикалық энергиясы', ru:'кинетическая энергия фотоэлектрона', u:'Дж'},
+        ]},
+    ],
+    deep_kk:[
+      {h:'🌟 Планк гипотезасы — кванттар', t:'Классикалық физика жылулық сәуле шығаруды түсіндіре алмады. <b>Планк (1900)</b>: энергия үздіксіз емес, <b>үлестермен — кванттармен</b> шығарылады және жұтылады: ε = hν. Бұл — бүкіл кванттық физиканың бастауы. h = 6,63·10⁻³⁴ Дж·с — Планк тұрақтысы.'},
+      {h:'☀️ Фотоэффект', t:'<b>Фотоэффект</b> — жарық әсерінен заттан электрондардың ұшып шығуы. <b>Заңдылықтар:</b> (1) <b>қызыл шекара</b> бар — жиілік ν_мин-нен аз болса фотоэффект болмайды; (2) электрондардың энергиясы жарық <b>жиілігіне</b> тәуелді, ал саны — жарық <b>қарқынына</b>. Эйнштейн теңдеуі: hν = A + mv²/2 — фотон энергиясы шығу жұмысына және электронның кинетикалық энергиясына жұмсалады.'},
+      {h:'⚛️ Бор теориясы мен атом', t:'<b>Резерфорд моделі:</b> атом орталығында оң ядро, айналасында электрондар. <b>Бор постулаттары:</b> (1) электрондар тек белгілі <b>тұрақты орбиталарда</b> сәуле шығармай қозғалады; (2) бір орбитадан екіншісіне өткенде атом фотон шығарады/жұтады: hν = E₂ − E₁. Осылай атомдардың <b>сызықтық спектрі</b> түсіндіріледі.'},
+      {h:'🔮 Корпускула-толқындық дуализм', t:'<b>де Бройль (1924):</b> кез келген бөлшек толқындық қасиет көрсетеді, толқын ұзындығы λ = h/(mv). Электрондардың дифракциясы мұны дәлелдеді. <b>Гейзенберг принципі:</b> бөлшектің координатасы мен импульсін бір мезетте дәл өлшеу мүмкін емес (ΔxΔp ≥ ℏ/2).'},
+    ],
+    deep_ru:[
+      {h:'🌟 Гипотеза Планка — кванты', t:'Классическая физика не смогла объяснить тепловое излучение. <b>Планк (1900)</b>: энергия излучается и поглощается не непрерывно, а <b>порциями — квантами</b>: ε = hν. Это начало всей квантовой физики. h = 6,63·10⁻³⁴ Дж·с — постоянная Планка.'},
+      {h:'☀️ Фотоэффект', t:'<b>Фотоэффект</b> — вырывание электронов из вещества под действием света. <b>Закономерности:</b> (1) есть <b>красная граница</b> — при частоте меньше ν_мин фотоэффекта нет; (2) энергия электронов зависит от <b>частоты</b> света, а их число — от <b>интенсивности</b>. Уравнение Эйнштейна: hν = A + mv²/2 — энергия фотона идёт на работу выхода и кинетическую энергию электрона.'},
+      {h:'⚛️ Теория Бора и атом', t:'<b>Модель Резерфорда:</b> в центре атома положительное ядро, вокруг — электроны. <b>Постулаты Бора:</b> (1) электроны движутся только по определённым <b>стационарным орбитам</b>, не излучая; (2) при переходе с орбиты на орбиту атом излучает/поглощает фотон: hν = E₂ − E₁. Так объясняется <b>линейчатый спектр</b> атомов.'},
+      {h:'🔮 Корпускулярно-волновой дуализм', t:'<b>де Бройль (1924):</b> любая частица проявляет волновые свойства с длиной волны λ = h/(mv). Это подтвердила дифракция электронов. <b>Принцип Гейзенберга:</b> нельзя одновременно точно измерить координату и импульс частицы (ΔxΔp ≥ ℏ/2).'},
+    ],
+    quiz:[
+      { q_kk:'Фотон жиілігі ν=6×10¹⁴ Гц. Энергиясы? (h=6.6×10⁻³⁴ Дж·с)', q_ru:'Частота фотона ν=6×10¹⁴ Гц. Энергия? (h=6.6×10⁻³⁴ Дж·с)',
+        opts:['3.96×10⁻¹⁹ Дж','6×10⁻³⁴ Дж','4×10⁻¹⁹ Дж','1.1×10⁻⁴⁸ Дж'], ans:0,
+        exp_kk:'E = hν = 6.6×10⁻³⁴ × 6×10¹⁴ = 3.96×10⁻¹⁹ Дж', exp_ru:'E = hν = 6.6×10⁻³⁴ × 6×10¹⁴ = 3.96×10⁻¹⁹ Дж' },
+      { q_kk:'Қандай жарық фотоэффект тудырмайды?', q_ru:'Какой свет не вызывает фотоэффект?',
+        opts_kk:['Энергиясы жұмыс функциясынан артық','Жиілігі аз, энергиясы жеткіліксіз','Рентген сәулесі','Ультракүлгін сәуле'],
+        opts_ru:['С энергией больше работы выхода','С малой частотой, энергии недостаточно','Рентгеновское','Ультрафиолетовое'],
+        ans:1, exp_kk:'Кесілген жиілік бар: ν < ν_кр болса — фотоэффект болмайды', exp_ru:'Есть красная граница: при ν < ν_кр фотоэффекта нет' },
+    ],
+    practice:[
+      { q_kk:'Металдың жұмыс функциясы A=4×10⁻¹⁹ Дж. λ=300 нм жарық фотоэффект тудыра ма? Максималды кинетикалық энергияны табыңыз.',
+        q_ru:'Работа выхода A=4×10⁻¹⁹ Дж. Свет λ=300 нм вызывает фотоэффект? Найдите максимальную кинетическую энергию.',
+        steps_kk:[
+          {t:'Фотон энергиясы', f:'E = hc/λ = 6.6×10⁻³⁴·3×10⁸/3×10⁻⁷ = 6.6×10⁻¹⁹ Дж', ans:'E > A, фотоэффект бар'},
+          {t:'Кинетикалық энергия', f:'E_к = E − A = 6.6×10⁻¹⁹ − 4×10⁻¹⁹', ans:'E_к = 2.6×10⁻¹⁹ Дж'},
+        ],
+        steps_ru:[
+          {t:'Энергия фотона', f:'E = hc/λ = 6.6×10⁻³⁴·3×10⁸/3×10⁻⁷ = 6.6×10⁻¹⁹ Дж', ans:'E > A, фотоэффект есть'},
+          {t:'Кинетическая энергия', f:'E_к = E − A = 6.6×10⁻¹⁹ − 4×10⁻¹⁹', ans:'E_к = 2.6×10⁻¹⁹ Дж'},
+        ]
+      }
+    ],
+    videos:[
+      {title_kk:'Фотоэффект | Кванттық физика', title_ru:'Фотоэффект | Квантовая физика', ch:'Fizika 11', url:'https://www.youtube.com/results?search_query=фотоэффект+физика+11+класс'},
+    ]
+  },
+  {
+    id:11, day:'11', icon:'☢️',
+    kk:{ title:'Ядролық физика. Релятивистік механика', topics:'Радиоактивтілік. Ядролық реакциялар. Арнайы салыстырмалылық теориясы.', tag:'Жалпы қорытынды — 11 сынып' },
+    ru:{ title:'Ядерная физика. Релятивистская механика', topics:'Радиоактивность. Ядерные реакции. Специальная теория относительности.', tag:'Итоговый — 11 класс' },
+    formulas:[
+      {f:'N = N₀·(1/2)^(t/T½)', unit:'—', meaning_kk:'Радиоактивті ыдырау заңы', meaning_ru:'Закон радиоактивного распада',
+        vars:[
+          {s:'N', kk:'t уақыттан кейін қалған ядро саны', ru:'число ядер, оставшихся через t', u:'—'},
+          {s:'N₀', kk:'бастапқы ядро саны', ru:'начальное число ядер', u:'—'},
+          {s:'t', kk:'өткен уақыт', ru:'прошедшее время', u:'с'},
+          {s:'T½', kk:'жартылай ыдырау периоды', ru:'период полураспада', u:'с'},
+        ]},
+      {f:'ΔE = Δm·c²', unit:'Дж', meaning_kk:'Ядроның байланыс энергиясы', meaning_ru:'Энергия связи ядра',
+        vars:[
+          {s:'ΔE', kk:'байланыс энергиясы', ru:'энергия связи', u:'Дж'},
+          {s:'Δm', kk:'масса ақауы (дефекті)', ru:'дефект массы', u:'кг'},
+          {s:'c', kk:'жарық жылдамдығы', ru:'скорость света', u:'м/с'},
+        ]},
+      {f:'m = m₀/√(1−v²/c²)', unit:'кг', meaning_kk:'Релятивистік масса', meaning_ru:'Релятивистская масса',
+        vars:[
+          {s:'m', kk:'қозғалыстағы дене массасы', ru:'масса движущегося тела', u:'кг'},
+          {s:'m₀', kk:'тыныштық массасы', ru:'масса покоя', u:'кг'},
+          {s:'v', kk:'дене жылдамдығы', ru:'скорость тела', u:'м/с'},
+          {s:'c', kk:'жарық жылдамдығы', ru:'скорость света', u:'м/с'},
+        ]},
+      {f:'t = t₀/√(1−v²/c²)', unit:'с', meaning_kk:'Уақыттың баяулауы (СТО)', meaning_ru:'Замедление времени (СТО)',
+        vars:[
+          {s:'t', kk:'қозғалмайтын бақылаушы өлшеген уақыт', ru:'время по неподвижному наблюдателю', u:'с'},
+          {s:'t₀', kk:'меншікті уақыт (қозғалыстағы)', ru:'собственное время (в движущейся системе)', u:'с'},
+          {s:'v', kk:'жылдамдық', ru:'скорость', u:'м/с'},
+          {s:'c', kk:'жарық жылдамдығы', ru:'скорость света', u:'м/с'},
+        ]},
+      {f:'l = l₀·√(1−v²/c²)', unit:'м', meaning_kk:'Ұзындықтың қысқаруы (СТО)', meaning_ru:'Сокращение длины (СТО)',
+        vars:[
+          {s:'l', kk:'қозғалыстағы дене ұзындығы', ru:'длина движущегося тела', u:'м'},
+          {s:'l₀', kk:'меншікті (тыныштықтағы) ұзындық', ru:'собственная длина (в покое)', u:'м'},
+          {s:'v', kk:'жылдамдық', ru:'скорость', u:'м/с'},
+          {s:'c', kk:'жарық жылдамдығы', ru:'скорость света', u:'м/с'},
+        ]},
+    ],
+    deep_kk:[
+      {h:'☢️ Радиоактивтілік', t:'<b>Радиоактивтілік</b> — тұрақсыз ядролардың өздігінен сәуле шығара ыдырауы. Үш түрі: <b>α-сәуле</b> (гелий ядросы ⁴₂He, нашар өтімді), <b>β-сәуле</b> (электрондар, орташа өтімді), <b>γ-сәуле</b> (электромагниттік, өте өтімді). Ыдырауда заряд пен масса сақталу заңдары орындалады (ығысу ережелері).'},
+      {h:'⏳ Жартылай ыдырау периоды', t:'<b>Жартылай ыдырау периоды T½</b> — ядролардың жартысы ыдырауға кететін уақыт. n период өткенде N = N₀/2ⁿ ядро қалады. Бұл — статистикалық заң: жеке ядро қашан ыдырайтынын білу мүмкін емес, бірақ үлкен сан үшін заңдылық дәл орындалады.'},
+      {h:'🔗 Ядро және байланыс энергиясы', t:'Ядро <b>протон мен нейтроннан (нуклондар)</b> тұрады; оларды <b>ядролық күштер</b> ұстайды. <b>Масса ақауы</b> Δm — нуклондардың бөлек массаларының қосындысы мен ядро массасының айырмасы. E = mc² бойынша оған <b>байланыс энергиясы</b> ΔE = Δmc² сәйкес келеді. Ядролық синтез пен бөліну осы энергияны босатады.'},
+      {h:'🚀 Арнайы салыстырмалылық теориясы', t:'<b>Эйнштейн (1905) постулаттары:</b> (1) физика заңдары барлық инерциялық санақ жүйелерінде бірдей; (2) вакуумдағы жарық жылдамдығы c барлық жүйеде тұрақты және ең үлкен жылдамдық. Салдары: жылдамдық c-ға жақындағанда <b>уақыт баяулайды, ұзындық қысқарады, масса артады</b>. E = mc² — масса мен энергияның баламалылығы.'},
+    ],
+    deep_ru:[
+      {h:'☢️ Радиоактивность', t:'<b>Радиоактивность</b> — самопроизвольный распад нестабильных ядер с испусканием излучения. Три вида: <b>α-излучение</b> (ядра гелия ⁴₂He, слабопроникающее), <b>β-излучение</b> (электроны, средней проникаемости), <b>γ-излучение</b> (электромагнитное, очень проникающее). При распаде выполняются законы сохранения заряда и массового числа (правила смещения).'},
+      {h:'⏳ Период полураспада', t:'<b>Период полураспада T½</b> — время, за которое распадается половина ядер. После n периодов остаётся N = N₀/2ⁿ ядер. Это статистический закон: нельзя предсказать, когда распадётся отдельное ядро, но для большого числа закономерность выполняется точно.'},
+      {h:'🔗 Ядро и энергия связи', t:'Ядро состоит из <b>протонов и нейтронов (нуклонов)</b>, удерживаемых <b>ядерными силами</b>. <b>Дефект массы</b> Δm — разность суммы масс отдельных нуклонов и массы ядра. По E = mc² ему соответствует <b>энергия связи</b> ΔE = Δmc². Ядерный синтез и деление высвобождают эту энергию.'},
+      {h:'🚀 Специальная теория относительности', t:'<b>Постулаты Эйнштейна (1905):</b> (1) законы физики одинаковы во всех инерциальных системах отсчёта; (2) скорость света в вакууме c постоянна во всех системах и является предельной. Следствия: при приближении скорости к c <b>время замедляется, длина сокращается, масса растёт</b>. E = mc² — эквивалентность массы и энергии.'},
+    ],
+    quiz:[
+      { q_kk:'T½=10 жыл, N₀=1000 атом. 30 жылдан кейін қанша атом қалады?', q_ru:'T½=10 лет, N₀=1000 атом. Сколько атомов останется через 30 лет?',
+        opts:['125','250','500','100'], ans:0,
+        exp_kk:'t/T½ = 3, N = 1000·(1/2)³ = 1000/8 = 125', exp_ru:'t/T½ = 3, N = 1000·(1/2)³ = 1000/8 = 125' },
+      { q_kk:'Арнайы салыстырмалылық теориясына сәйкес v→c болса?', q_ru:'По СТО при v→c:',
+        opts_kk:['Масса, уақыт, ұзындық өзгермейді','Масса артады, уақыт созылады, ұзындық қысқарады','Масса кемиді, жылдамдық шексіз артады','Энергия нөлге тең'],
+        opts_ru:['Масса, время, длина не меняются','Масса растёт, время замедляется, длина сокращается','Масса уменьшается, скорость растёт бесконечно','Энергия равна нулю'],
+        ans:1, exp_kk:'Релятивистік эффекттер: масса артады, уақыт кеңейеді, ұзындық қысқарады', exp_ru:'Релятивистские эффекты: рост массы, замедление времени, сокращение длины' },
+      { q_kk:'1 г затта E = mc² бойынша қандай энергия бар?', q_ru:'Какая энергия в 1 г вещества по E = mc²?',
+        opts:['9×10¹³ Дж','3×10⁸ Дж','9×10¹⁶ Дж','1 Дж'], ans:0,
+        exp_kk:'E = 10⁻³ × (3×10⁸)² = 9×10¹³ Дж', exp_ru:'E = 10⁻³ × (3×10⁸)² = 9×10¹³ Дж' },
+    ],
+    practice:[
+      { q_kk:'Ядро m_д = 2.01355 а.е.м. және m_т = 3.01550 а.е.м. дейтерий мен тритий синтезі: ³₁H + ²₁H → ⁴₂He + n. He ядросының массасы 4.00150 а.е.м., нейтрон 1.00867 а.е.м. Бөлінетін энергияны табыңыз.',
+        q_ru:'Синтез дейтерия и трития: ³₁H + ²₁H → ⁴₂He + n. Массы: m_д=2.01355, m_т=3.01550, m_He=4.00150, m_n=1.00867 а.е.м. Найдите выделяемую энергию.',
+        steps_kk:[
+          {t:'Масса дефекті', f:'Δm = (2.01355+3.01550) − (4.00150+1.00867) = 5.02905 − 5.01017', ans:'Δm = 0.01888 а.е.м.'},
+          {t:'Энергия', f:'ΔE = Δm·931.5 МэВ = 0.01888×931.5', ans:'ΔE ≈ 17.6 МэВ'},
+        ],
+        steps_ru:[
+          {t:'Дефект масс', f:'Δm = (2.01355+3.01550) − (4.00150+1.00867) = 5.02905 − 5.01017', ans:'Δm = 0.01888 а.е.м.'},
+          {t:'Энергия', f:'ΔE = Δm·931.5 МэВ = 0.01888×931.5', ans:'ΔE ≈ 17.6 МэВ'},
+        ]
+      }
+    ],
+    videos:[
+      {title_kk:'Ядролық физика | Радиоактивтілік', title_ru:'Ядерная физика | Радиоактивность', ch:'Nuclear KZ', url:'https://www.youtube.com/results?search_query=ядерная+физика+физика+11+класс'},
+      {title_kk:'Арнайы салыстырмалылық теориясы', title_ru:'Специальная теория относительности', ch:'Physics 11', url:'https://www.youtube.com/results?search_query=специальная+теория+относительности+физика'},
+    ]
+  },
+];
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let lang = localStorage.getItem('lang') || 'kk';
+let completed = JSON.parse(localStorage.getItem('completed') || '{}');
+let quizState = {};
+
+// ═══════════════════════════════════════════════════════
+// CORE UTILS
+// ═══════════════════════════════════════════════════════
+function t(key){ return T[lang][key] || key; }
+function save(){ localStorage.setItem('completed', JSON.stringify(completed)); }
+
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2200);
+}
+
+function setLang(l){
+  lang = l; localStorage.setItem('lang',''+l);
+  ['lang-kk','lang-ru','tlang-kk','tlang-ru'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){ el.classList.toggle('active', id.includes(l)); }
+  });
+  applyTranslations();
+  renderDashboard();
+  updateStats();
+}
+
+function applyTranslations(){
+  const map = {
+    'lbl-grade':'grade','lbl-app-title':'appTitle','hero-title':'heroTitle','hero-sub':'heroSub',
+    'stat-done-lbl':'statDone','stat-total-lbl':'statTotal','stat-pct-lbl':'statPct',
+    'lbl-plan':'plan','lbl-progress-title':'progressTitle','ring-lbl':'ringLbl',
+    'lbl-days-progress':'daysProgress','lbl-achievements':'achievements',
+    'lbl-settings-title':'settingsTitle','lbl-pref':'pref',
+    'set-notif':'setNotif','set-notif-sub':'setNotifSub',
+    'set-sound':'setSound','set-sound-sub':'setSoundSub',
+    'lbl-about':'about','set-ver':'setVer','set-reset':'setReset','set-reset-sub':'setResetSub',
+    'nav-home-lbl':'navHome','nav-prog-lbl':'navProg','nav-set-lbl':'navSet',
+    'tnav-home-lbl':'navHome','tnav-progress-lbl':'navProg','tnav-settings-lbl':'settingsTitle',
+  };
+  for(const [id,key] of Object.entries(map)){
+    const el = document.getElementById(id);
+    if(el) el.textContent = t(key);
+  }
+  document.documentElement.lang = lang;
+}
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  ['home','progress','settings'].forEach(n=>{
+    document.getElementById('nav-'+n)?.classList.toggle('active', n===name);
+    document.getElementById('tnav-'+n)?.classList.toggle('active', n===name);
+  });
+  if(name==='progress') renderProgress();
+  window.scrollTo(0,0);
+}
+
+function showTopic(dayId){
+  const day = DAYS.find(d=>d.id===dayId);
+  if(!day) return;
+  document.getElementById('screen-topic').innerHTML = buildTopicHTML(day);
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-topic').classList.add('active');
+  window.scrollTo(0,0);
+  quizState[dayId] = quizState[dayId] || {};
+}
+
+// ═══════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════
+function updateStats(){
+  const done = Object.keys(completed).filter(k=>completed[k]).length;
+  const pct = Math.round(done/11*100);
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-pct').textContent = pct+'%';
+  document.getElementById('hero-prog').style.width = pct+'%';
+}
+
+function renderDashboard(){
+  const grid = document.getElementById('day-grid');
+  if(!grid) return;
+  const today = parseInt(localStorage.getItem('today')||'1');
+  grid.innerHTML = DAYS.map(day=>{
+    const isDone = completed[day.id];
+    const isToday = day.id === today;
+    const info = day[lang];
+    const badge = isDone ? `<span class="day-badge badge-done">${t('badgeDone')}</span>`
+                : isToday ? `<span class="day-badge badge-active">${t('badgeActive')}</span>`
+                : `<span class="day-badge badge-todo">${t('badgeTodo')}</span>`;
+    return `<div class="day-card${isDone?' completed':''}${isToday?' active-day':''}"
+               onclick="showTopic(${day.id})">
+      <div class="day-header">
+        <span class="day-num">${t('plan').split(' ')[0]} ${day.day}</span>
+        ${badge}
+      </div>
+      <div class="day-title">${day.icon} ${info.title}</div>
+      <div class="day-topics">${info.topics}</div>
+      <div class="day-progress">
+        <button class="check-btn${isDone?' checked':''}" onclick="event.stopPropagation();toggleDay(${day.id})" aria-label="Аяқта">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+        <div class="mini-prog"><div class="mini-prog-fill" style="width:${isDone?100:0}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleDay(id){
+  completed[id] = !completed[id];
+  save(); updateStats(); renderDashboard();
+  if(completed[id]) showToast(t('toastDone'));
+}
+
+// ═══════════════════════════════════════════════════════
+// TOPIC HTML BUILDER
+// ═══════════════════════════════════════════════════════
+function buildTopicHTML(day){
+  const info = day[lang];
+  const theories = day['theory_'+lang]||[];
+  const quizzes = day.quiz||[];
+  const practices = day.practice||[];
+  const videos = day.videos||[];
+
+  // Formulas — each formula as a card with full term-by-term breakdown
+  const formulaRows = (day.formulas||[]).map(f=>{
+    const meaning = lang==='kk' ? f.meaning_kk : f.meaning_ru;
+    const vars = f.vars || [];
+    const varRows = vars.map(v=>{
+      const name = lang==='kk' ? v.kk : v.ru;
+      const dimless = (!v.u || v.u==='—' || v.u==='1');
+      return `<div class="var-row">
+        <span class="var-sym">${v.s}</span>
+        <span class="var-name">${name}</span>
+        <span class="var-unit${dimless?' dimensionless':''}">${v.u || '—'}</span>
+      </div>`;
+    }).join('');
+    return `<div class="formula-card">
+      <div class="formula-card-top">
+        <span class="formula-big">${f.f}</span>
+        <span class="formula-unit-tag">[ ${f.unit} ]</span>
+      </div>
+      <div class="formula-meaning">${meaning}</div>
+      ${varRows ? `<div class="var-label">${t('terms')}</div><div class="var-grid">${varRows}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  // Theory — deep explanatory blocks + quick-review bullets
+  const theoryItems = theories.map(th=>`<li><div class="theory-dot"></div><span>${th}</span></li>`).join('');
+  const deep = day['deep_'+lang] || [];
+  const deepBlocks = deep.map(d=>`<div class="dt-block">
+    <div class="dt-title">${d.h}</div>
+    <div class="dt-text">${d.t}</div>
+  </div>`).join('');
+
+  // Quiz
+  const quizItems = quizzes.map((q,qi)=>{
+    const qText = lang==='kk' ? q.q_kk : q.q_ru;
+    const opts = lang==='kk'
+      ? (q.opts_kk || q.opts)
+      : (q.opts_ru || q.opts);
+    const letters = ['A','B','C','D'];
+    const optBtns = opts.map((o,oi)=>`
+      <button class="quiz-opt" id="qopt_${day.id}_${qi}_${oi}"
+        onclick="answerQuiz(${day.id},${qi},${oi},${q.ans})">
+        <span class="opt-letter">${letters[oi]}</span>${o}
+      </button>`).join('');
+    const exp = lang==='kk' ? q.exp_kk : q.exp_ru;
+    return `<div class="quiz-q" id="quiz_${day.id}_${qi}">
+      <div class="quiz-q-text">${qi+1}. ${qText}</div>
+      <div class="quiz-options">${optBtns}</div>
+      <div class="quiz-explanation" id="qexp_${day.id}_${qi}">💡 ${exp}</div>
+    </div>`;
+  }).join('');
+
+  // Practice
+  const practiceItems = practices.map((p,pi)=>{
+    const qText = lang==='kk' ? p.q_kk : p.q_ru;
+    const steps = lang==='kk' ? p.steps_kk : p.steps_ru;
+    const stepHTML = steps.map((s,si)=>`<div class="step">
+      <div class="step-num">${si+1}</div>
+      <div class="step-text">${s.t}: <span class="step-formula">${s.f}</span>${s.ans?`<div class="answer-box">→ ${s.ans}</div>`:''}</div>
+    </div>`).join('');
+    return `<div class="practice-item">
+      <div class="practice-q" onclick="togglePractice(this)">
+        <div class="practice-q-text">${qText}</div>
+        <svg class="chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="practice-sol">${stepHTML}</div>
+    </div>`;
+  }).join('');
+
+  // Videos
+  const videoCards = videos.map(v=>{
+    const title = lang==='kk' ? v.title_kk : v.title_ru;
+    return `<a class="video-card" href="${v.url}" target="_blank" rel="noopener" style="text-decoration:none;display:block;">
+      <div class="video-thumb">
+        <div class="video-thumb-bg"></div>
+        <div class="play-icon">
+          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+      </div>
+      <div class="video-info">
+        <div class="video-title">${title}</div>
+        <div class="video-meta">▶ ${v.ch} • ${t('watchVideo')}</div>
+      </div>
+    </a>`;
+  }).join('');
+
+  const isDone = completed[day.id];
+
+  return `<div class="topic-header">
+    <button class="back-btn" onclick="showScreen('home')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="15 18 9 12 15 6"/></svg>
+      ${t('back')}
+    </button>
+  </div>
+  <div class="topic-body">
+    <div class="topic-tag">${info.tag}</div>
+    <h1 style="margin-bottom:12px;">${day.icon} ${info.title}</h1>
+    
+    <!-- Summary -->
+    <div class="section-card">
+      <div class="section-head">
+        <div class="section-icon" style="background:rgba(59,130,246,.15);">📋</div>
+        <h3>${t('summary')}</h3>
+      </div>
+      <div class="section-body">
+        <div class="topic-summary"><p>${info.topics}</p></div>
+      </div>
+    </div>
+
+    <!-- Formulas -->
+    ${formulaRows ? `<div class="section-card">
+      <div class="section-head">
+        <div class="section-icon" style="background:rgba(6,182,212,.15);">🔢</div>
+        <h3>${t('formulas')}</h3>
+      </div>
+      <div class="section-body">
+        <div class="formula-cards">${formulaRows}</div>
+      </div>
+    </div>` : ''}
+
+    <!-- Theory -->
+    <div class="section-card">
+      <div class="section-head">
+        <div class="section-icon" style="background:rgba(139,92,246,.15);">📚</div>
+        <h3>${t('theory')}</h3>
+      </div>
+      <div class="section-body">
+        ${deepBlocks ? `<div class="deep-theory">${deepBlocks}</div>
+        <div class="theory-subhead">${t('quickReview')}</div>` : ''}
+        <ul class="theory-list">${theoryItems}</ul>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    ${quizItems ? `<div class="section-card">
+      <div class="section-head">
+        <div class="section-icon" style="background:rgba(245,158,11,.15);">✏️</div>
+        <h3>${t('quiz')}</h3>
+      </div>
+      <div class="section-body">
+        ${quizItems}
+        <div class="quiz-score" id="quiz-score-${day.id}" style="display:none;">
+          <div class="stat-num" id="quiz-score-num-${day.id}">-</div>
+          <div style="color:var(--text2);font-size:.85rem;">${t('yourScore')}</div>
+          <button class="quiz-reset" onclick="resetQuiz(${day.id})">${t('resetQuiz')}</button>
+        </div>
+      </div>
+    </div>` : ''}
+
+    <!-- Practice -->
+    ${practiceItems ? `<div class="section-card">
+      <div class="section-head">
+        <div class="section-icon" style="background:rgba(16,185,129,.15);">🧮</div>
+        <h3>${t('practice')}</h3>
+      </div>
+      <div class="section-body" style="padding:12px 0;">
+        ${practiceItems}
+      </div>
+    </div>` : ''}
+
+    <!-- Videos -->
+    ${videoCards ? `<div class="section-card">
+      <div class="section-head">
+        <div class="section-icon" style="background:rgba(239,68,68,.15);">🎬</div>
+        <h3>${t('video')}</h3>
+      </div>
+      <div class="section-body">${videoCards}</div>
+    </div>` : ''}
+
+    <!-- Complete button -->
+    <button style="width:100%;padding:16px;margin-top:4px;
+      background:${isDone?'var(--green)':'var(--accent)'};
+      border:none;border-radius:var(--radius);color:#fff;
+      font-size:1rem;font-weight:700;cursor:pointer;
+      min-height:56px;transition:opacity .2s;"
+      onclick="markDone(${day.id})"
+      id="complete-btn-${day.id}">
+      ${isDone ? '✓ '+t('badgeDone') : t('checkTopic')}
+    </button>
+  </div>`;
+}
+
+function markDone(id){
+  completed[id] = true; save(); updateStats();
+  const btn = document.getElementById('complete-btn-'+id);
+  if(btn){ btn.style.background='var(--green)'; btn.textContent='✓ '+t('badgeDone'); }
+  showToast(t('toastDone'));
+}
+
+// ═══════════════════════════════════════════════════════
+// QUIZ LOGIC
+// ═══════════════════════════════════════════════════════
+function answerQuiz(dayId, qi, chosen, correct){
+  const scoreKey = `q${dayId}`;
+  if(!quizState[dayId]) quizState[dayId] = {};
+  if(quizState[dayId][qi] !== undefined) return;
+  quizState[dayId][qi] = chosen === correct;
+  
+  const opts = document.querySelectorAll(`[id^="qopt_${dayId}_${qi}_"]`);
+  opts.forEach((btn,i)=>{
+    btn.classList.add('disabled');
+    if(i === correct) btn.classList.add('correct');
+    else if(i === chosen && chosen !== correct) btn.classList.add('wrong');
+  });
+  const expEl = document.getElementById(`qexp_${dayId}_${qi}`);
+  if(expEl) expEl.classList.add('show');
+  
+  // Check if all answered
+  const day = DAYS.find(d=>d.id===dayId);
+  if(day && Object.keys(quizState[dayId]).length === day.quiz.length){
+    const correctCount = Object.values(quizState[dayId]).filter(Boolean).length;
+    const scoreEl = document.getElementById('quiz-score-'+dayId);
+    const numEl = document.getElementById('quiz-score-num-'+dayId);
+    if(scoreEl && numEl){
+      numEl.textContent = correctCount+'/'+day.quiz.length+' '+t('correct');
+      scoreEl.style.display = 'block';
+    }
+  }
+}
+
+function resetQuiz(dayId){
+  quizState[dayId] = {};
+  showTopic(dayId);
+}
+
+// ═══════════════════════════════════════════════════════
+// PRACTICE TOGGLE
+// ═══════════════════════════════════════════════════════
+function togglePractice(el){
+  const sol = el.nextElementSibling;
+  const chev = el.querySelector('.chevron');
+  const isOpen = sol.classList.contains('open');
+  sol.classList.toggle('open', !isOpen);
+  if(chev) chev.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+
+// ═══════════════════════════════════════════════════════
+// PROGRESS SCREEN
+// ═══════════════════════════════════════════════════════
+function renderProgress(){
+  const done = DAYS.filter(d=>completed[d.id]).length;
+  const pct = Math.round(done/11*100);
+  const offset = 283 - (283 * pct/100);
+  document.getElementById('ring-fill').style.strokeDashoffset = offset;
+  document.getElementById('ring-pct').textContent = pct+'%';
+  document.getElementById('ring-lbl').textContent = t('ringLbl');
+
+  // Day list
+  const list = document.getElementById('progress-day-list');
+  if(list){
+    list.innerHTML = DAYS.map(d=>{
+      const info = d[lang];
+      const done = completed[d.id];
+      return `<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;
+        background:var(--card);border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;"
+        onclick="showTopic(${d.id})">
+        <span style="font-size:1.2rem;">${d.icon}</span>
+        <div style="flex:1;">
+          <div style="font-size:.88rem;font-weight:600;">${t('plan').split(' ')[0]} ${d.day}: ${info.title}</div>
+          <div style="font-size:.75rem;color:var(--text3);">${info.tag}</div>
+        </div>
+        <span style="width:20px;height:20px;border-radius:50%;background:${done?'var(--green)':'var(--bg3)'};
+          border:1.5px solid ${done?'var(--green)':'var(--border2)'};
+          display:flex;align-items:center;justify-content:center;">
+          ${done?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':''}
+        </span>
+      </div>`;
+    }).join('');
+  }
+
+  // Achievements
+  const achGrid = document.getElementById('achievement-grid');
+  if(achGrid){
+    const achs = [
+      {icon:'🌟', name_kk:'Алғашқы қадам', name_ru:'Первый шаг', cond:done>=1},
+      {icon:'⚡', name_kk:'Механик', name_ru:'Механик', cond:done>=3},
+      {icon:'🔥', name_kk:'Жарты жол', name_ru:'Половина пути', cond:done>=6},
+      {icon:'🏆', name_kk:'Чемпион', name_ru:'Чемпион', cond:done===11},
+      {icon:'🧪', name_kk:'Тәжірибеші', name_ru:'Экспериментатор', cond:done>=9},
+      {icon:'💎', name_kk:'Физик', name_ru:'Физик', cond:done>=11},
+    ];
+    achGrid.innerHTML = achs.map(a=>`<div class="achievement${a.cond?'':' ach-locked'}">
+      <div class="ach-icon">${a.icon}</div>
+      <div class="ach-name">${lang==='kk'?a.name_kk:a.name_ru}</div>
+    </div>`).join('');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════
+let settings = JSON.parse(localStorage.getItem('settings')||'{"notif":false,"sound":true}');
+function toggleSetting(key){
+  settings[key] = !settings[key];
+  localStorage.setItem('settings', JSON.stringify(settings));
+  const el = document.getElementById('toggle-'+key);
+  if(el) el.classList.toggle('on', settings[key]);
+}
+function resetProgress(){
+  if(confirm(lang==='kk'?'Барлық прогресті тазалайсыз ба?':'Сбросить весь прогресс?')){
+    completed = {}; save(); updateStats(); renderDashboard();
+    showToast(t('toastReset'));
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+applyTranslations();
+renderDashboard();
+updateStats();
+
+// Set today to first uncompleted
+const firstUncompleted = DAYS.find(d=>!completed[d.id]);
+localStorage.setItem('today', firstUncompleted ? firstUncompleted.id : 11);
+
+// Init settings toggles
+['notif','sound'].forEach(k=>{
+  const el = document.getElementById('toggle-'+k);
+  if(el) el.classList.toggle('on', !!settings[k]);
+});
+</script>
+</body>
+</html>
