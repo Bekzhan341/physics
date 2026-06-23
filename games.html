@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЕНТ Тренажёр | Игры и Quiz — Физика и История</title>
+<style>
+:root{
+  --bg:#0f1226; --bg2:#161a37; --card:#1d2247; --card2:#262c5a;
+  --accent:#6c8cff; --accent2:#a06bff; --ok:#3ddc97; --bad:#ff6b81;
+  --warn:#ffcf5c; --txt:#eef1ff; --muted:#9aa3d0; --line:#2c3367;
+  --phys:#6c8cff; --hist:#ffb05c;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;
+  background:radial-gradient(1200px 600px at 70% -10%,#23295c 0%,var(--bg) 55%);
+  color:var(--txt);min-height:100vh;padding:0 0 90px;
+}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px}
+header.top{
+  position:sticky;top:0;z-index:30;backdrop-filter:blur(8px);
+  background:linear-gradient(180deg,rgba(15,18,38,.92),rgba(15,18,38,.6));
+  border-bottom:1px solid var(--line);
+}
+.top-inner{max-width:920px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:12px 16px}
+.brand{font-weight:800;font-size:18px;letter-spacing:.3px}
+.brand span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand small{display:block;font-weight:500;font-size:11px;color:var(--muted);letter-spacing:0}
+.top-spacer{flex:1}
+.ghost{
+  background:var(--card);border:1px solid var(--line);color:var(--txt);
+  padding:8px 12px;border-radius:11px;font-size:13px;cursor:pointer;font-weight:600;
+}
+.ghost:hover{background:var(--card2)}
+a.ghost{text-decoration:none;display:inline-block}
+
+h1.page{font-size:24px;margin:22px 0 4px;font-weight:800}
+.sub{color:var(--muted);font-size:14px;margin-bottom:18px;line-height:1.5}
+.crumbs{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:13px;margin:18px 0 10px;flex-wrap:wrap}
+.crumbs b{color:var(--txt)}
+.crumbs .c-btn{cursor:pointer;color:var(--accent);font-weight:600}
+.crumbs .c-btn:hover{text-decoration:underline}
+
+.grid{display:grid;gap:14px}
+.grid.two{grid-template-columns:1fr 1fr}
+.grid.auto{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+@media(max-width:560px){.grid.two{grid-template-columns:1fr}}
+
+.tile{
+  background:linear-gradient(160deg,var(--card),var(--bg2));
+  border:1px solid var(--line);border-radius:18px;padding:20px;cursor:pointer;
+  transition:.15s transform,.15s border-color,.15s box-shadow;position:relative;overflow:hidden;
+}
+.tile:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 10px 30px -12px rgba(108,140,255,.5)}
+.tile .ic{font-size:30px;margin-bottom:8px}
+.tile h3{font-size:18px;margin-bottom:4px}
+.tile p{color:var(--muted);font-size:13px;line-height:1.45}
+.tile.phys{border-left:4px solid var(--phys)}
+.tile.hist{border-left:4px solid var(--hist)}
+.tile .count{position:absolute;top:14px;right:16px;font-size:12px;color:var(--muted);
+  background:rgba(255,255,255,.05);padding:3px 9px;border-radius:20px}
+.tile.disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important;border-color:var(--line)!important}
+
+.pill{display:inline-block;font-size:11px;padding:3px 9px;border-radius:20px;font-weight:700;letter-spacing:.3px}
+.pill.formula{background:rgba(108,140,255,.18);color:#aebcff}
+.pill.date{background:rgba(255,176,92,.18);color:#ffce9a}
+.pill.name{background:rgba(160,107,255,.18);color:#c9aaff}
+.pill.term{background:rgba(61,220,151,.16);color:#92f0c6}
+
+/* ===== Game shell ===== */
+.game-head{display:flex;align-items:center;gap:12px;margin:6px 0 16px;flex-wrap:wrap}
+.game-head h2{font-size:20px}
+.progressbar{height:8px;background:var(--card);border-radius:20px;overflow:hidden;margin:4px 0 18px}
+.progressbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;transition:.3s}
+.stat{display:flex;gap:16px;font-size:13px;color:var(--muted)}
+.stat b{color:var(--txt)}
+.stat .g{color:var(--ok)} .stat .r{color:var(--bad)}
+
+/* Flashcards */
+.flashwrap{perspective:1400px;margin:10px 0}
+.flashcard{
+  position:relative;width:100%;min-height:300px;cursor:pointer;
+  transform-style:preserve-3d;transition:transform .5s;
+}
+.flashcard.flip{transform:rotateY(180deg)}
+.face{
+  position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:28px;text-align:center;border:1px solid var(--line);
+}
+.face.front{background:linear-gradient(160deg,var(--card2),var(--bg2))}
+.face.back{background:linear-gradient(160deg,#23306b,#1a1f44);transform:rotateY(180deg)}
+.face .lab{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.face .main{font-size:26px;font-weight:700;line-height:1.35}
+.face .formula-txt{font-family:'Cambria Math','Times New Roman',serif;font-size:30px}
+.face .app{margin-top:14px;font-size:14px;color:var(--muted);max-width:480px;line-height:1.5}
+.face .hint{position:absolute;bottom:14px;font-size:12px;color:var(--muted)}
+.face .tag{position:absolute;top:14px;left:16px}
+.controls{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;justify-content:center}
+.btn{border:none;border-radius:13px;padding:13px 20px;font-size:15px;font-weight:700;cursor:pointer;transition:.12s;flex:1;min-width:120px}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff}
+.btn.good{background:var(--ok);color:#04321f}
+.btn.bad{background:var(--bad);color:#3a0410}
+.btn.neutral{background:var(--card2);color:var(--txt);border:1px solid var(--line)}
+
+/* Match */
+.match-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match-item{
+  background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px;
+  cursor:pointer;font-size:14px;line-height:1.35;transition:.12s;min-height:56px;display:flex;align-items:center;
+}
+.match-item.formula-txt{font-family:'Cambria Math',serif;font-size:17px}
+.match-item:hover{border-color:var(--accent)}
+.match-item.sel{border-color:var(--accent);background:var(--card2);box-shadow:0 0 0 2px var(--accent) inset}
+.match-item.ok{border-color:var(--ok);background:rgba(61,220,151,.12);color:var(--ok);cursor:default;pointer-events:none;opacity:.55}
+.match-item.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* Quiz */
+.q-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:8px}
+.q-text{font-size:18px;font-weight:600;line-height:1.45;margin-bottom:18px}
+.q-text .formula-txt{font-family:'Cambria Math',serif}
+.opts{display:grid;gap:10px}
+.opt{
+  text-align:left;background:var(--bg2);border:1px solid var(--line);border-radius:13px;
+  padding:14px 16px;font-size:15px;cursor:pointer;transition:.12s;color:var(--txt);line-height:1.4;
+}
+.opt.formula-txt{font-family:'Cambria Math',serif;font-size:17px}
+.opt:hover{border-color:var(--accent);background:var(--card2)}
+.opt.correct{border-color:var(--ok);background:rgba(61,220,151,.15);color:#bff5dc}
+.opt.wrong{border-color:var(--bad);background:rgba(255,107,129,.13);color:#ffc1cb}
+.opt:disabled{cursor:default}
+
+/* Type-in */
+.typein-q{font-size:20px;font-weight:600;line-height:1.5;margin:10px 0 18px;text-align:center}
+.typein-box{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.typein-box input{
+  background:var(--bg2);border:1px solid var(--line);border-radius:13px;color:var(--txt);
+  padding:14px 18px;font-size:20px;width:180px;text-align:center;font-weight:700;
+}
+.typein-box input:focus{outline:none;border-color:var(--accent)}
+.feedback{text-align:center;margin-top:16px;font-size:16px;font-weight:600;min-height:24px}
+.feedback.ok{color:var(--ok)} .feedback.bad{color:var(--bad)}
+
+/* Result */
+.result{text-align:center;padding:30px 16px}
+.result .big{font-size:54px;font-weight:800;margin:6px 0}
+.result .ring{font-size:60px}
+.result p{color:var(--muted);margin:8px 0 20px}
+.review{text-align:left;margin-top:22px}
+.review h4{margin-bottom:10px;font-size:15px;color:var(--muted)}
+.review .row{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;font-size:14px}
+.review .row .ev{color:var(--muted)} .review .row .an{color:var(--ok);font-weight:700}
+
+footer.foot{text-align:center;color:var(--muted);font-size:12px;margin-top:36px;line-height:1.6}
+.hide{display:none!important}
+.subtag{font-weight:700}
+.subtag.phys{color:var(--phys)} .subtag.hist{color:var(--hist)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">ЕНТ <span>Тренажёр</span><small>Игры и Quiz · запоминание на автомате</small></div>
+    <div class="top-spacer"></div>
+    <a class="ghost" href="index.html">📚 Учебник</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="app"></div>
+  <footer class="foot">
+    Цель: выучить формулы, теории, термины, даты и имена так, чтобы применять на автомате.<br>
+    Источники: формулы 7–11 класс + конспекты · История Казахстана (ЕНТ).
+  </footer>
+</div>
+
+<script>
+/* =========================================================================
+   ДАННЫЕ
+   item: { f:фронт, b:бэк, app:применение(необяз.), cat:'formula|date|name|term' }
+   ========================================================================= */
+const DATA = {
+  phys:{ name:'Физика', icon:'⚛', color:'phys', topics:{
+    kin:{ name:'Кинематика', items:[
+      {cat:'formula',f:'Средняя скорость',b:'vср = S / t',app:'Найти скорость по всему пути и времени (без учёта изменения скорости).'},
+      {cat:'formula',f:'Перемещение (равномерное)',b:'S = v · t',app:'Путь при постоянной скорости.'},
+      {cat:'formula',f:'Ускорение',b:'a = (v − v₀) / t',app:'Как быстро меняется скорость за время t.'},
+      {cat:'formula',f:'Скорость при равноускоренном движении',b:'v = v₀ + a·t',app:'Конечная скорость через начальную, ускорение и время.'},
+      {cat:'formula',f:'Путь при равноускоренном движении',b:'S = v₀t + a·t² / 2',app:'Путь, когда тело разгоняется или тормозит.'},
+      {cat:'formula',f:'Связь скорости и пути (без времени)',b:'v² = v₀² + 2aS',app:'Когда время неизвестно — связывает скорость и путь.'},
+      {cat:'formula',f:'Высота при свободном падении',b:'h = g·t² / 2',app:'Падение без начальной скорости.'},
+      {cat:'formula',f:'Скорость при падении на землю',b:'v = √(2gh)',app:'Скорость тела в момент удара о землю.'},
+      {cat:'formula',f:'Время падения',b:'t = √(2h / g)',app:'Сколько падает тело с высоты h.'},
+      {cat:'formula',f:'Период вращения',b:'T = t / N = 1/ν',app:'Время одного полного оборота.'},
+      {cat:'formula',f:'Частота вращения',b:'ν = N / t = 1/T',app:'Сколько оборотов в секунду.'},
+      {cat:'formula',f:'Угловая скорость',b:'ω = 2π / T = 2πν',app:'Скорость вращения по углу (рад/с).'},
+      {cat:'formula',f:'Линейная скорость при вращении',b:'v = ω·R = 2πR/T',app:'Скорость точки на окружности радиуса R.'},
+      {cat:'formula',f:'Центростремительное ускорение',b:'aц = v² / R = ω²R',app:'Ускорение, направленное к центру окружности.'},
+    ]},
+    din:{ name:'Динамика (силы)', items:[
+      {cat:'formula',f:'II закон Ньютона',b:'F = m · a',app:'Главный закон динамики: сила = масса × ускорение.'},
+      {cat:'formula',f:'Сила тяжести',b:'Fт = m · g',app:'С какой силой Земля притягивает тело.'},
+      {cat:'formula',f:'Закон Гука',b:'Fупр = k · x',app:'Сила упругости пружины при растяжении/сжатии на x.'},
+      {cat:'formula',f:'Сила трения',b:'Fтр = μ · N',app:'Трение скольжения через коэффициент μ и силу реакции N.'},
+      {cat:'formula',f:'Закон всемирного тяготения',b:'F = G·m₁m₂ / r²',app:'Сила притяжения между двумя массами.'},
+      {cat:'formula',f:'Ускорение свободного падения',b:'g = G·M / R²',app:'g на поверхности планеты массы M и радиуса R.'},
+      {cat:'formula',f:'Первая космическая скорость',b:'v₁ = √(g·R) = √(GM/R)',app:'Скорость для выхода на круговую орбиту (~7,9 км/с).'},
+      {cat:'formula',f:'Вес тела с ускорением (лифт)',b:'P = m(g ± a)',app:'Вес растёт при разгоне вверх, падает при движении вниз.'},
+      {cat:'formula',f:'Период математического маятника',b:'T = 2π·√(l/g)',app:'Зависит от длины нити, не от массы.'},
+      {cat:'formula',f:'Период пружинного маятника',b:'T = 2π·√(m/k)',app:'Зависит от массы и жёсткости пружины.'},
+    ]},
+    cons:{ name:'Законы сохранения', items:[
+      {cat:'formula',f:'Импульс тела',b:'p = m · v',app:'Количество движения тела.'},
+      {cat:'formula',f:'Импульс силы',b:'F · t = Δp',app:'Изменение импульса равно импульсу силы.'},
+      {cat:'formula',f:'Закон сохранения импульса',b:'m₁v₁ + m₂v₂ = const',app:'Суммарный импульс замкнутой системы постоянен (удары, отдача).'},
+      {cat:'formula',f:'Механическая работа',b:'A = F · s · cosα',app:'Работа силы при перемещении s под углом α.'},
+      {cat:'formula',f:'Мощность',b:'N = A / t = F·v',app:'Скорость выполнения работы.'},
+      {cat:'formula',f:'Кинетическая энергия',b:'Eк = m·v² / 2',app:'Энергия движущегося тела.'},
+      {cat:'formula',f:'Потенциальная энергия (тяжести)',b:'Eп = m·g·h',app:'Энергия поднятого тела на высоте h.'},
+      {cat:'formula',f:'Потенциальная энергия пружины',b:'Eп = k·x² / 2',app:'Энергия деформированной пружины.'},
+      {cat:'formula',f:'Закон сохранения энергии',b:'Eк + Eп = const',app:'Полная механическая энергия сохраняется (без трения).'},
+      {cat:'formula',f:'КПД механизма',b:'η = (Aполезн / Aзатр)·100%',app:'Доля полезной работы.'},
+      {cat:'formula',f:'Момент силы',b:'M = F · d',app:'Вращающее действие силы (рычаг, плечо d).'},
+    ]},
+    hydro:{ name:'Давление и гидростатика', items:[
+      {cat:'formula',f:'Давление',b:'p = F / S',app:'Сила, действующая на единицу площади.'},
+      {cat:'formula',f:'Плотность',b:'ρ = m / V',app:'Масса единицы объёма вещества.'},
+      {cat:'formula',f:'Гидростатическое давление',b:'p = ρ·g·h',app:'Давление столба жидкости на глубине h.'},
+      {cat:'formula',f:'Сила Архимеда',b:'Fа = ρж · g · V',app:'Выталкивающая сила на тело в жидкости/газе.'},
+      {cat:'formula',f:'Уравнение неразрывности',b:'S₁v₁ = S₂v₂',app:'В узкой трубе жидкость течёт быстрее.'},
+      {cat:'formula',f:'Уравнение Бернулли',b:'p + ρv²/2 + ρgh = const',app:'Связь давления и скорости потока жидкости.'},
+    ]},
+    mkt:{ name:'МКТ и газовые законы', items:[
+      {cat:'formula',f:'Количество вещества',b:'ν = N/Nₐ = m/M',app:'Число молей через число частиц или массу.'},
+      {cat:'formula',f:'Молярная масса',b:'M = m / ν',app:'Масса одного моля вещества.'},
+      {cat:'formula',f:'Концентрация молекул',b:'n = N / V',app:'Число молекул в единице объёма.'},
+      {cat:'formula',f:'Основное уравнение МКТ',b:'p = ⅓·n·m₀·v² = ⅔·n·Eк',app:'Связь давления газа с движением молекул.'},
+      {cat:'formula',f:'Средняя кинетическая энергия молекулы',b:'Eк = (3/2)·k·T',app:'Энергия молекулы зависит только от температуры.'},
+      {cat:'formula',f:'Давление газа через температуру',b:'p = n·k·T',app:'Давление идеального газа.'},
+      {cat:'formula',f:'Уравнение Менделеева–Клапейрона',b:'p·V = (m/M)·R·T',app:'Главное уравнение состояния идеального газа.'},
+      {cat:'formula',f:'Объединённый газовый закон',b:'p·V / T = const',app:'Связь p, V, T при неизменной массе газа.'},
+      {cat:'formula',f:'Закон Бойля–Мариотта (T=const)',b:'p·V = const',app:'Изотермический процесс: давление обратно объёму.'},
+      {cat:'formula',f:'Закон Гей-Люссака (p=const)',b:'V / T = const',app:'Изобарный процесс: объём растёт с температурой.'},
+      {cat:'formula',f:'Закон Шарля (V=const)',b:'p / T = const',app:'Изохорный процесс: давление растёт с температурой.'},
+      {cat:'formula',f:'Термодинамическая температура',b:'T = t + 273',app:'Перевод °C в кельвины.'},
+    ]},
+    term:{ name:'Термодинамика', items:[
+      {cat:'formula',f:'Количество теплоты (нагрев)',b:'Q = c·m·(t₂ − t₁)',app:'Теплота для нагрева/охлаждения тела.'},
+      {cat:'formula',f:'Теплота сгорания топлива',b:'Q = q · m',app:'Теплота при сгорании массы m топлива.'},
+      {cat:'formula',f:'Теплота плавления',b:'Q = λ · m',app:'Теплота для плавления тела при темп. плавления.'},
+      {cat:'formula',f:'Теплота парообразования',b:'Q = L · m',app:'Теплота для превращения жидкости в пар.'},
+      {cat:'formula',f:'Внутренняя энергия идеального газа',b:'U = (3/2)·ν·R·T',app:'Энергия одноатомного газа.'},
+      {cat:'formula',f:'Первый закон термодинамики',b:'Q = ΔU + A',app:'Тепло идёт на изменение внутр. энергии и работу газа.'},
+      {cat:'formula',f:'Работа газа',b:'A = p · ΔV',app:'Работа при изобарном расширении.'},
+      {cat:'formula',f:'КПД теплового двигателя',b:'η = (Q₁ − Q₂) / Q₁',app:'Доля тепла, перешедшего в работу.'},
+      {cat:'formula',f:'КПД цикла Карно (максимальный)',b:'η = (T₁ − T₂) / T₁',app:'Максимально возможный КПД при темп. нагревателя и холодильника.'},
+      {cat:'formula',f:'Относительная влажность',b:'φ = (ρ / ρ₀)·100%',app:'Насколько воздух близок к насыщению паром.'},
+    ]},
+    es:{ name:'Электростатика', items:[
+      {cat:'formula',f:'Закон Кулона',b:'F = k·q₁q₂ / r²',app:'Сила между двумя точечными зарядами.'},
+      {cat:'formula',f:'Напряжённость электрического поля',b:'E = F / q',app:'Сила, действующая на единичный заряд.'},
+      {cat:'formula',f:'Напряжённость точечного заряда',b:'E = k·q / r²',app:'Поле, создаваемое зарядом q на расстоянии r.'},
+      {cat:'formula',f:'Потенциал поля',b:'φ = Wп / q',app:'Потенциальная энергия единичного заряда.'},
+      {cat:'formula',f:'Работа электрического поля',b:'A = q·(φ₁ − φ₂) = q·U',app:'Работа по перемещению заряда между точками.'},
+      {cat:'formula',f:'Связь напряжённости и напряжения',b:'E = U / d',app:'Однородное поле между пластинами.'},
+      {cat:'formula',f:'Электроёмкость',b:'C = q / U',app:'Способность проводника накапливать заряд.'},
+      {cat:'formula',f:'Ёмкость плоского конденсатора',b:'C = ε·ε₀·S / d',app:'Зависит от площади пластин и расстояния.'},
+      {cat:'formula',f:'Энергия конденсатора',b:'W = C·U² / 2',app:'Энергия, запасённая в заряженном конденсаторе.'},
+    ]},
+    dc:{ name:'Постоянный ток', items:[
+      {cat:'formula',f:'Сила тока',b:'I = q / t',app:'Заряд, проходящий за время t.'},
+      {cat:'formula',f:'Закон Ома для участка цепи',b:'I = U / R',app:'Ток прямо пропорционален напряжению.'},
+      {cat:'formula',f:'Закон Ома для полной цепи',b:'I = ε / (R + r)',app:'Учитывает внутреннее сопротивление источника r.'},
+      {cat:'formula',f:'Сопротивление проводника',b:'R = ρ·l / S',app:'Зависит от материала, длины и сечения.'},
+      {cat:'formula',f:'Последовательное соединение',b:'R = R₁ + R₂ (I = const)',app:'Сопротивления складываются, ток одинаков.'},
+      {cat:'formula',f:'Параллельное соединение',b:'1/R = 1/R₁ + 1/R₂ (U = const)',app:'Общее сопротивление меньше наименьшего.'},
+      {cat:'formula',f:'Работа тока',b:'A = U·I·t',app:'Энергия, переданная за время t.'},
+      {cat:'formula',f:'Мощность тока',b:'P = U·I = I²R = U²/R',app:'Скорость выделения энергии.'},
+      {cat:'formula',f:'Закон Джоуля–Ленца',b:'Q = I²·R·t',app:'Тепло, выделяемое током в проводнике.'},
+      {cat:'formula',f:'ЭДС источника',b:'ε = Aстор / q',app:'Работа сторонних сил по разделению зарядов.'},
+      {cat:'formula',f:'Закон Фарадея (электролиз)',b:'m = k·I·t',app:'Масса вещества на электроде при электролизе.'},
+    ]},
+    magn:{ name:'Магнетизм и индукция', items:[
+      {cat:'formula',f:'Сила Ампера',b:'Fа = B·I·l·sinα',app:'Сила на проводник с током в магнитном поле.'},
+      {cat:'formula',f:'Сила Лоренца',b:'Fл = q·v·B·sinα',app:'Сила на движущийся заряд в магнитном поле.'},
+      {cat:'formula',f:'Магнитная индукция',b:'B = Fmax / (I·l)',app:'Характеристика магнитного поля.'},
+      {cat:'formula',f:'Магнитный поток',b:'Φ = B·S·cosα',app:'Поток через площадь контура.'},
+      {cat:'formula',f:'ЭДС индукции (Фарадей)',b:'εi = −ΔΦ / Δt',app:'ЭДС при изменении магнитного потока.'},
+      {cat:'formula',f:'Индукционный ток',b:'Ii = εi / R',app:'Ток в замкнутом контуре от ЭДС индукции.'},
+    ]},
+    wave:{ name:'Колебания и волны', items:[
+      {cat:'formula',f:'Формула Томсона (контур)',b:'T = 2π·√(L·C)',app:'Период электромагнитных колебаний в контуре.'},
+      {cat:'formula',f:'Скорость волны',b:'v = λ / T = λ·ν',app:'Связь длины волны, периода и частоты.'},
+      {cat:'formula',f:'Скорость ЭМ-волны в среде',b:'v = c / n',app:'Свет в среде медленнее, чем в вакууме.'},
+      {cat:'formula',f:'Длина волны в вакууме',b:'λ = c·T = c / ν',app:'Через скорость света и частоту.'},
+    ]},
+    opt:{ name:'Оптика', items:[
+      {cat:'formula',f:'Закон преломления (Снеллиус)',b:'sinα / sinβ = n',app:'Преломление света на границе сред.'},
+      {cat:'formula',f:'Оптическая сила линзы',b:'D = 1 / F',app:'В диоптриях; обратна фокусному расстоянию.'},
+      {cat:'formula',f:'Формула тонкой линзы',b:'1/F = 1/d + 1/f',app:'Связь фокуса, расстояний до предмета и изображения.'},
+      {cat:'formula',f:'Линейное увеличение',b:'Γ = H / h = f / d',app:'Во сколько раз изображение больше предмета.'},
+    ]},
+    quant:{ name:'Квантовая и ядерная физика', items:[
+      {cat:'formula',f:'Энергия фотона (Планк)',b:'E = h·ν',app:'Энергия кванта света зависит от частоты.'},
+      {cat:'formula',f:'Уравнение фотоэффекта (Эйнштейн)',b:'h·ν = Aвых + m·v²/2',app:'Энергия фотона = работа выхода + кин. энергия электрона.'},
+      {cat:'formula',f:'Связь массы и энергии',b:'E = m·c²',app:'Эквивалентность массы и энергии.'},
+      {cat:'formula',f:'Энергия связи ядра',b:'Eсв = Δm·c²',app:'Энергия по дефекту массы Δm.'},
+      {cat:'formula',f:'Заряд ядра',b:'q = Z·e',app:'Z — порядковый номер элемента.'},
+      {cat:'formula',f:'Закон радиоактивного распада',b:'N = N₀·2^(−t/T)',app:'Число нераспавшихся ядер через период полураспада T.'},
+      {cat:'formula',f:'Ядерная энергия (в МэВ)',b:'E = 931·Δm',app:'Энергия реакции при Δm в а.е.м.'},
+    ]},
+  }},
+
+  hist:{ name:'История Казахстана', icon:'🏛', color:'hist', topics:{
+    ancient:{ name:'Древность и средневековье', items:[
+      {cat:'date',f:'Расцвет племён саков',b:'VII–III вв. до н.э.'},
+      {cat:'date',f:'Образование Тюркского каганата',b:'552 г.'},
+      {cat:'date',f:'Образование Западно-Тюркского каганата',b:'603 г.'},
+      {cat:'date',f:'Государство Караханидов (образование)',b:'942 г.'},
+      {cat:'name',f:'Томирис',b:'Царица саков-массагетов, победила Кира II.'},
+      {cat:'name',f:'Аль-Фараби',b:'«Второй учитель», философ и учёный из Отрара.'},
+      {cat:'name',f:'Махмуд Кашгари',b:'Автор «Дивани лугат ат-турк» (словарь тюрк. языков).'},
+      {cat:'name',f:'Юсуф Баласагуни',b:'Автор поэмы «Кутадгу билиг» («Благодатное знание»).'},
+      {cat:'name',f:'Ходжа Ахмед Ясауи',b:'Суфийский поэт, автор «Диуани хикмет».'},
+      {cat:'term',f:'Сақ',b:'Древние ираноязычные кочевые племена на территории Казахстана.'},
+      {cat:'term',f:'Тараз / Отрар',b:'Древние города на Великом Шёлковом пути.'},
+      {cat:'term',f:'Великий Шёлковый путь',b:'Торговый путь, связывавший Восток и Запад.'},
+    ]},
+    mongol:{ name:'Монголы и Золотая Орда', items:[
+      {cat:'date',f:'Образование Монгольской империи (Чингисхан)',b:'1206 г.'},
+      {cat:'date',f:'Нашествие монголов на Среднюю Азию и Казахстан',b:'1219–1221 гг.'},
+      {cat:'date',f:'Образование Золотой Орды (улус Джучи)',b:'1227 г.'},
+      {cat:'date',f:'Образование Ак-Орды',b:'XIII–XIV вв.'},
+      {cat:'name',f:'Чингисхан',b:'Основатель Монгольской империи.'},
+      {cat:'name',f:'Жошы (Джучи)',b:'Старший сын Чингисхана, основатель улуса (Золотая Орда).'},
+      {cat:'name',f:'Бату (Батый)',b:'Хан, основатель и правитель Золотой Орды.'},
+      {cat:'name',f:'Узбек-хан',b:'При нём ислам стал государственной религией Золотой Орды.'},
+      {cat:'term',f:'Улус',b:'Удел, владение, выделенное члену правящего рода.'},
+      {cat:'term',f:'Курултай',b:'Съезд знати для выбора хана и решения важных дел.'},
+      {cat:'term',f:'Ак-Орда',b:'Государство на востоке Золотой Орды (основа Каз. ханства).'},
+    ]},
+    khanate:{ name:'Казахское ханство (XV–XVII)', items:[
+      {cat:'date',f:'Образование Казахского ханства (Керей и Жанибек)',b:'1465 г.'},
+      {cat:'date',f:'Правление Касым-хана (расцвет)',b:'1511–1518 гг.'},
+      {cat:'date',f:'Правление хана Хакназара',b:'1538–1580 гг.'},
+      {cat:'date',f:'Правление Есим-хана',b:'1598–1628 гг.'},
+      {cat:'date',f:'Правление Тауке-хана',b:'1680–1715 гг.'},
+      {cat:'name',f:'Керей и Жанибек',b:'Основатели Казахского ханства.'},
+      {cat:'name',f:'Касым-хан',b:'При нём ханство достигло расцвета; «Қасым ханның қасқа жолы».'},
+      {cat:'name',f:'Хакназар-хан',b:'Объединил казахские земли, укрепил ханство.'},
+      {cat:'name',f:'Есим-хан',b:'Создал свод законов «Есім ханның ескі жолы».'},
+      {cat:'name',f:'Тауке-хан',b:'Свод законов «Жеті Жарғы»; время трёх биев.'},
+      {cat:'name',f:'Толе би, Казыбек би, Айтеке би',b:'Три великих бия — советники Тауке-хана.'},
+      {cat:'term',f:'Жуз',b:'Объединение племён: Старший, Средний и Младший жузы.'},
+      {cat:'term',f:'Жеті Жарғы',b:'Свод законов хана Тауке («Семь установлений»).'},
+      {cat:'term',f:'Қасқа жол',b:'Свод законов Касым-хана («Светлый путь Касыма»).'},
+      {cat:'term',f:'Хан / Бий / Батыр',b:'Правитель / судья / воин-герой.'},
+    ]},
+    xviii:{ name:'Джунгары и XVIII век', items:[
+      {cat:'date',f:'Образование Джунгарского ханства',b:'1635 г.'},
+      {cat:'date',f:'«Ақтабан шұбырынды» — Годы великого бедствия',b:'1723–1727 гг.'},
+      {cat:'date',f:'Битва при Буланты («Қалмақ қырылған»)',b:'1726 г.'},
+      {cat:'date',f:'Анракайская битва (победа над джунгарами)',b:'1729 г.'},
+      {cat:'date',f:'Присоединение Младшего жуза к России',b:'1731 г.'},
+      {cat:'name',f:'Абулхаир-хан',b:'Хан Младшего жуза, принял подданство России (1731).'},
+      {cat:'name',f:'Абылай-хан',b:'Хан, искусный дипломат между Россией и Китаем.'},
+      {cat:'name',f:'Богенбай, Кабанбай, Наурызбай',b:'Прославленные батыры борьбы с джунгарами.'},
+      {cat:'name',f:'Райымбек батыр',b:'Герой освободительной борьбы против джунгар.'},
+      {cat:'term',f:'Ақтабан шұбырынды',b:'«Годы великого бедствия» — массовое бегство от джунгар (1723).'},
+      {cat:'term',f:'Жоңғар',b:'Джунгары — основные враги казахов в XVII–XVIII вв.'},
+      {cat:'term',f:'Анырақай',b:'Место решающей победы казахского ополчения над джунгарами.'},
+    ]},
+    colonial:{ name:'Колониальный период (XIX в.)', items:[
+      {cat:'date',f:'«Устав о сибирских киргизах» (ликвидация ханской власти, Ср. жуз)',b:'1822 г.'},
+      {cat:'date',f:'«Устав об оренбургских киргизах» (Младший жуз)',b:'1824 г.'},
+      {cat:'date',f:'Восстание Кенесары Касымулы',b:'1837–1847 гг.'},
+      {cat:'date',f:'Восстание Исатая и Махамбета (Бокеевская орда)',b:'1836–1838 гг.'},
+      {cat:'date',f:'Реформа управления («Временное положение»)',b:'1868 г.'},
+      {cat:'name',f:'Кенесары Касымулы',b:'Последний казахский хан, вождь крупного восстания.'},
+      {cat:'name',f:'Сырым Датулы',b:'Руководитель восстания в Младшем жузе (1783–1797).'},
+      {cat:'name',f:'Исатай Тайманулы и Махамбет Утемисулы',b:'Вожди восстания в Бокеевской орде.'},
+      {cat:'name',f:'Абай Кунанбаев',b:'Великий поэт, мыслитель, основоположник письменной литературы.'},
+      {cat:'name',f:'Шокан Уалиханов',b:'Учёный-просветитель, географ, этнограф.'},
+      {cat:'name',f:'Ыбырай Алтынсарин',b:'Педагог-просветитель, основатель светских школ.'},
+      {cat:'term',f:'Колониализм',b:'Политика подчинения и управления краем Российской империей.'},
+      {cat:'term',f:'Бокеевская (Внутренняя) орда',b:'Казахское владение между Волгой и Уралом.'},
+    ]},
+    xx:{ name:'Начало XX века и Алаш', items:[
+      {cat:'date',f:'Национально-освободительное восстание',b:'1916 г.'},
+      {cat:'date',f:'Февральская и Октябрьская революции',b:'1917 г.'},
+      {cat:'date',f:'Образование автономии Алаш (Алашорда)',b:'декабрь 1917 г.'},
+      {cat:'date',f:'Образование Казахской (Киргизской) АССР',b:'1920 г.'},
+      {cat:'name',f:'Алихан Бокейханов',b:'Лидер партии и автономии Алаш.'},
+      {cat:'name',f:'Ахмет Байтурсынов',b:'Деятель Алаш, реформатор казахской письменности.'},
+      {cat:'name',f:'Миржакып Дулатов',b:'Поэт и публицист Алаш, автор «Оян, қазақ!».'},
+      {cat:'name',f:'Амангельды Иманов',b:'Один из руководителей восстания 1916 года.'},
+      {cat:'term',f:'Алаш',b:'Национальная партия и автономия казахской интеллигенции.'},
+      {cat:'term',f:'«Қазақ» (газета)',b:'Главное издание движения Алаш.'},
+      {cat:'term',f:'Указ 25 июня 1916 г.',b:'Указ о мобилизации казахов на тыловые работы — повод к восстанию.'},
+    ]},
+    soviet:{ name:'Советский Казахстан', items:[
+      {cat:'date',f:'Голод и коллективизация («Малый Октябрь» Голощёкина)',b:'1930–1933 гг.'},
+      {cat:'date',f:'Преобразование в Казахскую ССР',b:'1936 г.'},
+      {cat:'date',f:'Массовые политические репрессии',b:'1937–1938 гг.'},
+      {cat:'date',f:'Великая Отечественная война',b:'1941–1945 гг.'},
+      {cat:'date',f:'Первое испытание на Семипалатинском полигоне',b:'1949 г.'},
+      {cat:'date',f:'Начало освоения целины',b:'1954 г.'},
+      {cat:'date',f:'Первый полёт человека в космос (с Байконура)',b:'1961 г.'},
+      {cat:'name',f:'Филипп Голощёкин',b:'Партийный руководитель, политика «Малого Октября».'},
+      {cat:'name',f:'Бауыржан Момышулы',b:'Герой ВОВ, легендарный командир-панфиловец.'},
+      {cat:'name',f:'Алия Молдагулова и Маншук Маметова',b:'Девушки — Герои Советского Союза в ВОВ.'},
+      {cat:'name',f:'Динмухамед Кунаев',b:'Многолетний руководитель Казахской ССР.'},
+      {cat:'term',f:'Целина (тың игеру)',b:'Массовое освоение степных земель под зерно.'},
+      {cat:'term',f:'Коллективизация',b:'Насильственное объединение хозяйств в колхозы.'},
+      {cat:'term',f:'Байконур / Семипалатинский полигон',b:'Космодром / ядерный полигон на территории КазССР.'},
+    ]},
+    indep:{ name:'Независимый Казахстан', items:[
+      {cat:'date',f:'Декабрьские события (Желтоксан)',b:'1986 г.'},
+      {cat:'date',f:'Декларация о государственном суверенитете',b:'25 октября 1990 г.'},
+      {cat:'date',f:'Закон о независимости Республики Казахстан',b:'16 декабря 1991 г.'},
+      {cat:'date',f:'Введение национальной валюты — тенге',b:'15 ноября 1993 г.'},
+      {cat:'date',f:'Принятие действующей Конституции',b:'30 августа 1995 г.'},
+      {cat:'date',f:'Перенос столицы в Акмолу (Астану)',b:'1997 г.'},
+      {cat:'date',f:'Переименование столицы в Астану',b:'1998 г.'},
+      {cat:'name',f:'Нурсултан Назарбаев',b:'Первый Президент Республики Казахстан.'},
+      {cat:'name',f:'Касым-Жомарт Токаев',b:'Президент Республики Казахстан (с 2019 г.).'},
+      {cat:'term',f:'Желтоксан',b:'Декабрьские выступления молодёжи 1986 года в Алма-Ате.'},
+      {cat:'term',f:'Тенге',b:'Национальная валюта Казахстана с 1993 года.'},
+      {cat:'term',f:'Конституция',b:'Основной закон государства, принят в 1995 году.'},
+      {cat:'term',f:'Ассамблея народа Казахстана',b:'Институт, обеспечивающий межнациональное согласие.'},
+    ]},
+  }},
+};
+
+const CATLBL = {formula:'формула',date:'дата',name:'личность',term:'термин'};
+const QPREFIX = {formula:'Запиши формулу:', date:'В каком году / период:', name:'Чем известен(ы):', term:'Что означает:'};
+
+/* =========================================================================
+   СОСТОЯНИЕ + НАВИГАЦИЯ
+   ========================================================================= */
+let S = { subject:null, topic:null }; // topic key or 'all'
+const app = document.getElementById('app');
+
+function isFormula(it){return it.cat==='formula'}
+function fclass(it){return isFormula(it)?'formula-txt':''}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+function buildDeck(){
+  const subj = DATA[S.subject];
+  let deck=[];
+  if(S.topic==='all'){
+    for(const k in subj.topics) subj.topics[k].items.forEach(it=>deck.push({...it,_topic:subj.topics[k].name}));
+  } else {
+    subj.topics[S.topic].items.forEach(it=>deck.push({...it,_topic:subj.topics[S.topic].name}));
+  }
+  return deck;
+}
+function subjectPool(cat){ // все элементы предмета с данной категорией (для дистракторов)
+  const subj=DATA[S.subject]; let pool=[];
+  for(const k in subj.topics) subj.topics[k].items.forEach(it=>{if(it.cat===cat)pool.push(it)});
+  return pool;
+}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function crumbs(){
+  let h='<div class="crumbs"><span class="c-btn" onclick="goHome()">Главная</span>';
+  if(S.subject){h+=' › <span class="c-btn" onclick="goTopics()"><b>'+DATA[S.subject].name+'</b></span>';}
+  if(S.topic){const t=S.topic==='all'?'Все темы':DATA[S.subject].topics[S.topic].name;h+=' › <b>'+t+'</b>';}
+  return h+'</div>';
+}
+
+/* ---------- ЭКРАН 1: выбор предмета ---------- */
+function goHome(){
+  S={subject:null,topic:null};
+  let cards='';
+  for(const sk in DATA){
+    const d=DATA[sk]; let n=0; for(const t in d.topics)n+=d.topics[t].items.length;
+    cards+=`<div class="tile ${d.color}" onclick="pickSubject('${sk}')">
+      <span class="count">${n} карточек</span>
+      <div class="ic">${d.icon}</div><h3>${d.name}</h3>
+      <p>${sk==='phys'?'Формулы и их применение по всем темам 7–11 класса.':'Даты, личности и термины по всему курсу истории.'}</p></div>`;
+  }
+  app.innerHTML=`<h1 class="page">Что учим сегодня? 🎯</h1>
+   <p class="sub">Выбери предмет → тему → игру. Цель — довести формулы, даты, имена и термины до автоматизма через повторение в играх.</p>
+   <div class="grid two">${cards}</div>`;
+  scrollTo(0,0);
+}
+function pickSubject(sk){S.subject=sk;S.topic=null;goTopics();}
+
+/* ---------- ЭКРАН 2: выбор темы ---------- */
+function goTopics(){
+  S.topic=null;
+  const d=DATA[S.subject];
+  let tiles='';
+  let total=0;
+  for(const tk in d.topics){
+    const t=d.topics[tk];total+=t.items.length;
+    tiles+=`<div class="tile ${d.color}" onclick="pickTopic('${tk}')">
+      <span class="count">${t.items.length}</span><h3>${t.name}</h3>
+      <p>${topicSummary(t)}</p></div>`;
+  }
+  app.innerHTML=crumbs()+`<h1 class="page">${d.icon} ${d.name}</h1>
+   <p class="sub">Выбери тему или повтори всё сразу.</p>
+   <div class="tile ${d.color}" style="margin-bottom:14px" onclick="pickTopic('all')">
+     <span class="count">${total}</span><div class="ic">🔁</div><h3>Все темы — повторить всё</h3>
+     <p>Перемешанная колода из всех тем предмета. Лучший режим перед экзаменом.</p></div>
+   <div class="grid auto">${tiles}</div>`;
+  scrollTo(0,0);
+}
+function topicSummary(t){
+  const c={}; t.items.forEach(it=>c[it.cat]=(c[it.cat]||0)+1);
+  return Object.keys(c).map(k=>c[k]+' '+CATLBL[k]+(c[k]>1?'(ов)':'')).join(' · ');
+}
+function pickTopic(tk){S.topic=tk;goGames();}
+
+/* ---------- ЭКРАН 3: выбор игры ---------- */
+function goGames(){
+  const deck=buildDeck();
+  const hasDates=deck.some(i=>i.cat==='date');
+  const tname=S.topic==='all'?'Все темы':DATA[S.subject].topics[S.topic].name;
+  const games=[
+    {id:'flash',ic:'🃏',n:'Карточки',p:'Переворачивай карточку и вспоминай ответ. «Знаю» — убрать, «Ещё» — повторить.',ok:true},
+    {id:'match',ic:'🧩',n:'Найди пару',p:'Соедини левый столбец с правильным ответом справа на скорость.',ok:deck.length>=4},
+    {id:'quiz',ic:'❓',n:'Quiz (тест)',p:'4 варианта ответа. Я сам составляю вопросы из этой темы.',ok:deck.length>=4},
+    {id:'type',ic:'⌨️',n:'Впиши год',p:'Показываю событие — впиши год/период. Активное вспоминание дат.',ok:hasDates},
+  ];
+  app.innerHTML=crumbs()+`<h1 class="page">🎮 ${tname}</h1>
+   <p class="sub">${deck.length} карточек в колоде. Выбери игру — все они учат один и тот же материал по-разному, поэтому проходи их по очереди.</p>
+   <div class="grid two">${games.map(g=>`
+     <div class="tile ${DATA[S.subject].color} ${g.ok?'':'disabled'}" ${g.ok?`onclick="startGame('${g.id}')"`:''}>
+       <div class="ic">${g.ic}</div><h3>${g.n}</h3><p>${g.p}</p>
+       ${g.ok?'':'<p style="color:var(--bad);margin-top:6px">Недоступно для этой темы</p>'}</div>`).join('')}</div>`;
+  scrollTo(0,0);
+}
+function startGame(id){
+  if(id==='flash')flashStart();
+  else if(id==='match')matchStart();
+  else if(id==='quiz')quizStart();
+  else if(id==='type')typeStart();
+}
+function gameHeader(title){
+  return crumbs()+`<div class="game-head"><h2>${title}</h2><div class="top-spacer"></div>
+    <button class="ghost" onclick="goGames()">↻ Другая игра</button></div>`;
+}
+
+/* =========================================================================
+   ИГРА 1 — КАРТОЧКИ (Flashcards)
+   ========================================================================= */
+let FS;
+function flashStart(){
+  FS={queue:shuffle(buildDeck()),known:0,review:0,total:0,flipped:false,cur:null};
+  FS.total=FS.queue.length;
+  flashNext();
+}
+function flashNext(){
+  if(FS.queue.length===0){return flashDone();}
+  FS.cur=FS.queue[0];FS.flipped=false;flashRender();
+}
+function flashRender(){
+  const it=FS.cur, done=FS.total-FS.queue.length;
+  const pct=Math.round(done/FS.total*100);
+  app.innerHTML=gameHeader('🃏 Карточки')+
+   `<div class="stat" style="margin-bottom:6px"><span>Осталось: <b>${FS.queue.length}</b></span>
+     <span class="g">Знаю: <b>${FS.known}</b></span><span class="r">Повтор: <b>${FS.review}</b></span></div>
+    <div class="progressbar"><i style="width:${pct}%"></i></div>
+    <div class="flashwrap"><div class="flashcard" id="fcard" onclick="flashFlip()">
+      <div class="face front">
+        <span class="tag pill ${it.cat}">${CATLBL[it.cat]}</span>
+        <div class="lab">${it._topic}</div>
+        <div class="main">${esc(it.f)}</div>
+        <div class="hint">👆 нажми, чтобы перевернуть</div>
+      </div>
+      <div class="face back">
+        <span class="tag pill ${it.cat}">ответ</span>
+        <div class="main ${fclass(it)}">${esc(it.b)}</div>
+        ${it.app?`<div class="app">💡 ${esc(it.app)}</div>`:''}
+        <div class="hint">Вспомнил?</div>
+      </div></div></div>
+    <div class="controls">
+      <button class="btn bad" onclick="flashMark(false)">↻ Ещё повторить</button>
+      <button class="btn neutral" onclick="flashFlip()">🔁 Перевернуть</button>
+      <button class="btn good" onclick="flashMark(true)">✅ Знаю</button>
+    </div>`;
+  scrollTo(0,0);
+}
+function flashFlip(){FS.flipped=!FS.flipped;document.getElementById('fcard').classList.toggle('flip',FS.flipped);}
+function flashMark(known){
+  FS.queue.shift();
+  if(known){FS.known++;}
+  else{FS.review++;FS.queue.push(FS.cur);} // вернуть в конец очереди
+  flashNext();
+}
+function flashDone(){
+  app.innerHTML=gameHeader('🃏 Карточки')+`<div class="result">
+    <div class="ring">🎉</div><div class="big">${FS.total}</div>
+    <p>Колода пройдена! Каждую карточку ты в итоге вспомнил.</p>
+    <div class="controls" style="max-width:420px;margin:0 auto">
+      <button class="btn primary" onclick="flashStart()">🔁 Ещё раз</button>
+      <button class="btn neutral" onclick="goGames()">Другая игра</button></div></div>`;
+}
+
+/* =========================================================================
+   ИГРА 2 — НАЙДИ ПАРУ (Match)
+   ========================================================================= */
+let MS;
+function matchStart(){
+  const deck=shuffle(buildDeck()).slice(0,6);
+  MS={pairs:deck,left:shuffle(deck.map((d,i)=>({i,it:d}))),
+      right:shuffle(deck.map((d,i)=>({i,it:d}))),sel:null,matched:0,tries:0,t0:Date.now()};
+  matchRender();
+}
+function matchRender(){
+  const f=it=>`class="match-item ${isFormula(it)?'formula-txt':''}"`;
+  app.innerHTML=gameHeader('🧩 Найди пару')+
+   `<p class="sub">Нажми элемент слева, затем его пару справа. Попыток: <b id="mtries">${MS.tries}</b></p>
+    <div class="match-cols">
+      <div id="mleft">${MS.left.map(o=>`<div data-i="${o.i}" ${f(o.it)} onclick="matchPick('L',${o.i})">${esc(o.it.f)}</div>`).join('')}</div>
+      <div id="mright">${MS.right.map(o=>`<div data-i="${o.i}" ${f(o.it)} onclick="matchPick('R',${o.i})">${esc(o.it.b)}</div>`).join('')}</div>
+    </div>`;
+  scrollTo(0,0);
+}
+function matchEl(side,i){return document.querySelector('#m'+(side==='L'?'left':'right')+' [data-i="'+i+'"]');}
+function matchPick(side,i){
+  const el=matchEl(side,i);
+  if(el.classList.contains('ok'))return;
+  if(!MS.sel){MS.sel={side,i,el};el.classList.add('sel');return;}
+  if(MS.sel.side===side){ // переключение в том же столбце
+    MS.sel.el.classList.remove('sel');MS.sel={side,i,el};el.classList.add('sel');return;}
+  // пара выбрана из разных столбцов
+  MS.tries++;document.getElementById('mtries').textContent=MS.tries;
+  if(MS.sel.i===i){
+    MS.sel.el.classList.remove('sel');MS.sel.el.classList.add('ok');el.classList.add('ok');
+    MS.sel=null;MS.matched++;
+    if(MS.matched===MS.pairs.length)setTimeout(matchDone,300);
+  } else {
+    const a=MS.sel.el,b=el;a.classList.add('shake');b.classList.add('shake');b.classList.add('sel');
+    setTimeout(()=>{a.classList.remove('sel','shake');b.classList.remove('sel','shake');},380);
+    MS.sel=null;
+  }
+}
+function matchDone(){
+  const sec=((Date.now()-MS.t0)/1000).toFixed(1);
+  app.innerHTML=gameHeader('🧩 Найди пару')+`<div class="result">
+    <div class="ring">⚡</div><div class="big">${sec}с</div>
+    <p>Все пары собраны за ${MS.tries} попыток.</p>
+    <div class="controls" style="max-width:420px;margin:0 auto">
+      <button class="btn primary" onclick="matchStart()">🔁 Новый набор</button>
+      <button class="btn neutral" onclick="goGames()">Другая игра</button></div></div>`;
+}
+
+/* =========================================================================
+   ИГРА 3 — QUIZ (тест с 4 вариантами)
+   ========================================================================= */
+let QS;
+function quizStart(){
+  const deck=shuffle(buildDeck());
+  const qs=[];
+  for(const it of deck){
+    const pool=subjectPool(it.cat).filter(x=>x.b!==it.b);
+    if(pool.length<3)continue;
+    const distract=shuffle(pool).slice(0,3).map(x=>x.b);
+    const opts=shuffle([it.b,...distract]);
+    qs.push({it,opts,ans:it.b});
+    if(qs.length>=12)break;
+  }
+  QS={qs,idx:0,score:0,wrong:[]};
+  quizRender();
+}
+function quizRender(){
+  const q=QS.qs[QS.idx];
+  const pct=Math.round(QS.idx/QS.qs.length*100);
+  app.innerHTML=gameHeader('❓ Quiz')+
+   `<div class="stat" style="margin-bottom:6px"><span>Вопрос <b>${QS.idx+1}/${QS.qs.length}</b></span>
+      <span class="g">Верно: <b>${QS.score}</b></span></div>
+    <div class="progressbar"><i style="width:${pct}%"></i></div>
+    <div class="q-card">
+      <span class="pill ${q.it.cat}">${q.it._topic}</span>
+      <div class="q-text" style="margin-top:12px">${QPREFIX[q.it.cat]}<br><b>${esc(q.it.f)}</b></div>
+      <div class="opts" id="qopts">
+        ${q.opts.map(o=>`<button class="opt ${q.it.cat==='formula'?'formula-txt':''}" onclick="quizAns(this,'${esc(o).replace(/'/g,"\\'")}')">${esc(o)}</button>`).join('')}
+      </div>
+    </div>`;
+  scrollTo(0,0);
+}
+function quizAns(btn,chosen){
+  const q=QS.qs[QS.idx];
+  const buttons=[...document.querySelectorAll('#qopts .opt')];
+  buttons.forEach(b=>{b.disabled=true;
+    if(b.textContent===q.ans)b.classList.add('correct');});
+  if(chosen===q.ans){QS.score++;}
+  else{btn.classList.add('wrong');QS.wrong.push(q);}
+  setTimeout(()=>{QS.idx++; QS.idx>=QS.qs.length?quizDone():quizRender();},900);
+}
+function quizDone(){
+  const n=QS.qs.length,s=QS.score,pct=Math.round(s/n*100);
+  const ring=pct>=80?'🏆':pct>=50?'👍':'📒';
+  const msg=pct>=80?'Отлично! Материал почти на автомате.':pct>=50?'Хорошо, но пройди ещё раз слабые места.':'Повтори карточки по этой теме и возвращайся.';
+  let review='';
+  if(QS.wrong.length){
+    review='<div class="review"><h4>Ошибки — выучи эти:</h4>'+QS.wrong.map(q=>
+      `<div class="row"><span class="ev">${esc(q.it.f)}</span> → <span class="an">${esc(q.ans)}</span></div>`).join('')+'</div>';
+  }
+  app.innerHTML=gameHeader('❓ Quiz')+`<div class="result">
+    <div class="ring">${ring}</div><div class="big">${s}/${n}</div><p>${msg}</p>
+    <div class="controls" style="max-width:420px;margin:0 auto">
+      <button class="btn primary" onclick="quizStart()">🔁 Ещё раз</button>
+      <button class="btn neutral" onclick="goGames()">Другая игра</button></div>
+    ${review}</div>`;
+}
+
+/* =========================================================================
+   ИГРА 4 — ВПИШИ ГОД (Type-in, только даты)
+   ========================================================================= */
+let TS;
+function typeStart(){
+  const dates=shuffle(buildDeck().filter(i=>i.cat==='date'));
+  TS={qs:dates,idx:0,score:0,wrong:[]};
+  typeRender();
+}
+function normY(s){return String(s).toLowerCase().replace(/\s+/g,'').replace(/г\.?|год[а-я]*/g,'').replace(/гг\.?/g,'');}
+function typeRender(){
+  const q=TS.qs[TS.idx];
+  const pct=Math.round(TS.idx/TS.qs.length*100);
+  app.innerHTML=gameHeader('⌨️ Впиши год')+
+   `<div class="stat" style="margin-bottom:6px"><span>Вопрос <b>${TS.idx+1}/${TS.qs.length}</b></span>
+      <span class="g">Верно: <b>${TS.score}</b></span></div>
+    <div class="progressbar"><i style="width:${pct}%"></i></div>
+    <div class="q-card">
+      <span class="pill date">${q._topic}</span>
+      <div class="typein-q">${esc(q.f)}</div>
+      <div class="typein-box">
+        <input id="tin" inputmode="numeric" placeholder="год…" autocomplete="off"
+          onkeydown="if(event.key==='Enter')typeCheck()">
+        <button class="btn primary" style="flex:0 0 auto;min-width:120px" onclick="typeCheck()">Проверить</button>
+      </div>
+      <div class="feedback" id="tfb"></div>
+    </div>`;
+  setTimeout(()=>{const i=document.getElementById('tin');if(i)i.focus();},50);
+  scrollTo(0,0);
+}
+function typeCheck(){
+  const q=TS.qs[TS.idx], inp=document.getElementById('tin');
+  if(inp.disabled)return;
+  const fb=document.getElementById('tfb');
+  inp.disabled=true;
+  // верно, если введённое число встречается в правильном ответе
+  const got=normY(inp.value), want=normY(q.b);
+  const nums=(q.b.match(/\d{3,4}/g)||[]);
+  const ok = got && (got===want || nums.includes(got.replace(/[^\d]/g,'')) || want.includes(got));
+  if(ok){TS.score++;fb.className='feedback ok';fb.textContent='✅ Верно! '+q.b;inp.style.borderColor='var(--ok)';}
+  else{fb.className='feedback bad';fb.innerHTML='❌ Правильно: <b>'+esc(q.b)+'</b>';inp.style.borderColor='var(--bad)';TS.wrong.push(q);}
+  setTimeout(()=>{TS.idx++; TS.idx>=TS.qs.length?typeDone():typeRender();},1300);
+}
+function typeDone(){
+  const n=TS.qs.length,s=TS.score,pct=Math.round(s/n*100);
+  const ring=pct>=80?'🏆':pct>=50?'👍':'📒';
+  let review='';
+  if(TS.wrong.length){
+    review='<div class="review"><h4>Повтори эти даты:</h4>'+TS.wrong.map(q=>
+      `<div class="row"><span class="ev">${esc(q.f)}</span> → <span class="an">${esc(q.b)}</span></div>`).join('')+'</div>';
+  }
+  app.innerHTML=gameHeader('⌨️ Впиши год')+`<div class="result">
+    <div class="ring">${ring}</div><div class="big">${s}/${n}</div>
+    <p>${pct>=80?'Даты сидят крепко!':'Прогони ошибки в карточках и повтори.'}</p>
+    <div class="controls" style="max-width:420px;margin:0 auto">
+      <button class="btn primary" onclick="typeStart()">🔁 Ещё раз</button>
+      <button class="btn neutral" onclick="goGames()">Другая игра</button></div>
+    ${review}</div>`;
+}
+
+goHome();
+</script>
+</body>
+</html>
